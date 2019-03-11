@@ -36,9 +36,12 @@ classdef FutureEventList
         end
         
         function printList(self)
-            for i = 1:self.listSize
-                self.list(i)
+            fprintf("FEL: (%d, %s)", self.list(1).time, self.list(1).type);
+            for i = 2:self.listSize
+                fprintf(", ");
+                self.list(i).printEvent();
             end 
+            fprintf("\n");
         end
     end
 end
