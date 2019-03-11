@@ -1,4 +1,4 @@
-% Variables
+% Variables 
 
 global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
 global inspectorOneBlocked inspectorTwoBlocked;
