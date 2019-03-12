@@ -1,3 +1,8 @@
+%boolean variables for alternative designs
+global alternativeStrategy alternativePriority;
+alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
+alternativePriority = false; %set true to use alternative C1 queue priorities
+
 %initialize model
 global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist FEL clock;
 global Inspector1IdleTime Inspector2IdleTime;
