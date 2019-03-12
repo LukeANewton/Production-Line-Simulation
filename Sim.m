@@ -6,11 +6,29 @@ alternativePriority = false; %set true to use alternative C1 queue priorities
 %initialize model
 global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist FEL clock;
 global Inspector1IdleTime Inspector2IdleTime;
-global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime
-global P1Produced P2Produced P3Produced
+global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
+global P1Produced P2Produced P3Produced;
+global P1InProduction P2InProduction P3InProduction;
+global lastQueueC1PlacedIn;
+lastQueueC1PlacedIn = 0; %for round robin approach, need to know the last queue C1 has been placed in
 clock = 0;
+P1InProduction = false;
+P2InProduction = false;
+P3InProduction = false;
 initializeDistributions();
 initializeFEL();
+
+%this declaration will be removed from Product.m once we combine all the
+%files together
+global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
+global inspectorOneBlocked inspectorTwoBlocked;
+queueC1W1 = 0; % queue for component C1 at workstation 1
+queueC1W2 = 0; % queue for component C1 at workstation 2
+queueC1W3 = 0; % queue for component C1 at workstation 3
+queueC2W2 = 0; % queue for component C2 at workstation 2
+queueC3W3 = 0; % queue for component C3 at workstation 3
+inspectorOneBlocked = false;
+inspectorTwoBlocked = false;
 
 %main program loop - while FEL not empty, process the next event
 while FEL.listSize > 0
@@ -46,12 +64,6 @@ function initializeFEL()
     FEL = FEL.addEvent(e2);
 end
 
-%generates the next C1Ready event for insepctor 1
-function e = getNextInspector1Event()
-    global C1Dist clock;
-    e = Event(clock + random(C1Dist), EventType.C1Ready);
-end
-
 %generates the next C2Ready/C3Ready event for inspector 2
 %TO DO: inspector 2 should only randomly pick a component if
 %both C2 and C3 queues are not full. If one of the queues is full,
@@ -76,6 +88,7 @@ function processEvent(e)
 
     %TO DO:perform some action based on the type of event that is occuring
     if e.type == EventType.C1Ready
+        component1Ready();
     elseif e.type == EventType.C2Ready
     elseif e.type == EventType.C3Ready
     elseif e.type == EventType.P1Built
