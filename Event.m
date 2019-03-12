@@ -15,7 +15,7 @@ classdef Event
         end 
         %prints and event in a readable format
         function printEvent(self)
-            fprintf("(%d, %s)", self.time, self.type);
+            fprintf("(%f, %s)", self.time, self.type);
         end
     end
 end
