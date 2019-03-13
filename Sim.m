@@ -47,6 +47,7 @@ fprintf(fd, "Time inspector two spent idle: %f seconds\n", Inspector2IdleTime);
 fprintf(fd, "Time workstation one spent idle: %f seconds\n", Workstation1IdleTime);
 fprintf(fd, "Time workstation two spent idle: %f seconds\n", Workstation2IdleTime);
 fprintf(fd, "Time workstation three spent idle: %f seconds\n", Workstation3IdleTime);
+fclose(fd);
 %END OF MAIN CONTROL FLOW
 
 %creates the 6 distribution functions with parameters determined through 
