@@ -3,19 +3,31 @@
 %both C2 and C3 queues are not full. If one of the queues is full,
 %the inspector should inspect a component of the other type next
 function e = getNextInspector2Event()
-    global C2Dist C3Dist queueC2W2 queueC3W3 clock;
+    global C2Dist C3Dist queueC2W2 queueC3W3 clock maxSimulationTime;
     
     if queueC2W2 == 2 %if there is no space to place a C2, pick a C3 to inspect next
-        e = Event(clock + random(C2Dist), EventType.C2Ready);
+        timeToInspect = random(C2Dist);
+        if maxSimulationTime > clock + timeToInspect %only generate another event if before simualtion end time
+            e = Event(clock + timeToInspect, EventType.C2Ready);
+        end
     elseif queueC3W3 == 2 %if there is no space to place a C3, pick a C2 to inspect next
-        e = Event(clock + random(C3Dist), EventType.C3Ready);
+        timeToInspect = random(C3Dist);
+        if maxSimulationTime > clock + timeToInspect 
+            e = Event(clock + timeToInspect, EventType.C3Ready);
+        end
     else %neither queue is full so randomly pick a C2 or C3 to inspect next
      bernoulli = rand();
      bernoulli = bernoulli > 0.5;
      if bernoulli == 1
-         e = Event(clock + random(C2Dist), EventType.C2Ready);
+         timeToInspect = random(C2Dist);
+         if maxSimulationTime > clock + timeToInspect
+            e = Event(clock + timeToInspect, EventType.C2Ready);
+         end
      else
-         e = Event(clock + random(C3Dist), EventType.C3Ready);
+         timeToInspect = random(C3Dist);
+         if maxSimulationTime > clock + timeToInspect
+            e = Event(clock + timeToInspect, EventType.C3Ready);
+         end
      end
     end
 end 

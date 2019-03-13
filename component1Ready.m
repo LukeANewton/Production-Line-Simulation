@@ -61,8 +61,8 @@ function component1Ready()
         end
         %by now, a component should have been placed, we can verify
         %this by uncommenting the following 2 lines:
-        fprintf("component placed = %d\n", componentPlaced);
-        fprintf("component last placed in workstation %d queue\n", lastQueueC1PlacedIn);
+        fprintf("component one placed = %d\n", componentPlaced);
+        fprintf("component one last placed in workstation %d queue\n", lastQueueC1PlacedIn);
         
         %we know a component has been placed in a queue, can we now make a product?
         if lastQueueC1PlacedIn == 1 && ~P1InProduction%we can make a product 1
