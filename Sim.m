@@ -64,22 +64,6 @@ function initializeFEL()
     FEL = FEL.addEvent(e2);
 end
 
-%generates the next C2Ready/C3Ready event for inspector 2
-%TO DO: inspector 2 should only randomly pick a component if
-%both C2 and C3 queues are not full. If one of the queues is full,
-%the inspector should inspect a component of the other type next
-function e = getNextInspector2Event()
-    global C2Dist C3Dist clock;
-    %generate random 1 or 0 to pick C2Ready or C3Ready
-     bernoulli = rand();
-     bernoulli = bernoulli > 0.5;
-     if bernoulli == 1
-         e = Event(clock + random(C2Dist), EventType.C2Ready);
-     else
-         e = Event(clock + random(C3Dist), EventType.C3Ready);
-     end
-end 
-
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
     global clock;
