@@ -1,6 +1,6 @@
-%Defines a class for the future event list for the project. A future event
-%list consists of a collection of events in chronological order, and the
-%size of the list
+%Defines a class for the future event list for the project. 
+%A future event list consists of a collection of events in chronological 
+%order, and the size of the list
 classdef FutureEventList
     properties
         %collection of events

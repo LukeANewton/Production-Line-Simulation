@@ -1,7 +1,4 @@
-%generates the next C2Ready/C3Ready event for inspector 2
-%TO DO: inspector 2 should only randomly pick a component if
-%both C2 and C3 queues are not full. If one of the queues is full,
-%the inspector should inspect a component of the other type next
+%Generates the next C2Ready/C3Ready event for inspector 2.
 function e = getNextInspector2Event()
     global C2Dist C3Dist queueC2W2 queueC3W3 clock maxSimulationTime;
     

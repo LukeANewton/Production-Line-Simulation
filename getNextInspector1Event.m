@@ -1,4 +1,4 @@
-%generates the next C1Ready event for insepctor 1
+%Generates the next C1Ready event for insepctor 1.
 function e = getNextInspector1Event()
     global C1Dist clock maxSimulationTime;
     timeToInspect = random(C1Dist);

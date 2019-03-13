@@ -1,5 +1,5 @@
-%Defines a class for the events in the future event list. An event consists
-%of the time the event occurs and the type of event.
+%Defines a class for the events in the future event list. 
+%An event consists of the time the event occurs and the type of event.
 classdef Event
     properties
         %the time the eveent occurs at

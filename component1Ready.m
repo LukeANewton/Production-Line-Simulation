@@ -1,7 +1,8 @@
-%Contains the method for processing a C1Ready event, which occurs when 
-%inspector one finishes inspecting a component one. The component needs
-%to be placed in the appropriate queue, we must check if we can now make
-%any products, and we must start inspecting the next component one
+%Contains the method for processing a C1Ready event, 
+%which occurs when inspector one finishes inspecting a component one. The 
+%component needs to be placed in the appropriate queue, we must check if we 
+%can now make any products, and we must start inspecting the next component
+%one.
 function component1Ready()
     global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3 inspectorOneBlocked FEL;
     global alternativeStrategy alternativePriority lastQueueC1PlacedIn;

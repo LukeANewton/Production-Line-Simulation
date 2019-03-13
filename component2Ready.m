@@ -1,7 +1,7 @@
-%Contains the method for processing a C2Ready event, which occurs when 
-%inspector two finishes inspecting a component two. The component needs
-%to be placed in the queue, we must check if we can now make
-%any products, and we must start inspecting the next component 2 or 3
+%Contains the method for processing a C2Ready event, 
+%which occurs when inspector two finishes inspecting a component two. The 
+%component needs to be placed in the queue, we must check if we can now 
+%make any products, and we must start inspecting the next component 2 or 3.
 function component2Ready()
     global queueC1W2 queueC2W2 inspectorTwoBlocked FEL;
     global P2InProduction;

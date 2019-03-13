@@ -1,4 +1,4 @@
-% Check if a queue is full
+% Check if a queue is full.
 function isEmpty = isQueueEmpty(queue)
     isEmpty = false;
     if (queue == 0)

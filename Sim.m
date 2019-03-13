@@ -1,4 +1,4 @@
-%Main control flow for the queuing system simulation
+%Main control flow for the queuing system simulation.
 
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime;
