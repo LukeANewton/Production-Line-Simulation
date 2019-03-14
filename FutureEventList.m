@@ -13,7 +13,7 @@ classdef FutureEventList
         function FEL = FutureEventList(firstEvent)
             FEL.listSize = 0;
             FEL.list = [];
-            FEL.addEvent(firstEvent);
+            FEL = FEL.addEvent(firstEvent);
         end 
         %adds newEvent into list in correct chronological position
         function self = addEvent(self, newEvent)
@@ -44,12 +44,18 @@ classdef FutureEventList
         end
         %prints FEL in a readable format
         function printList(self)
-            fprintf("FEL: (%d, %s)", self.list(1).time, self.list(1).type);
-            for i = 2:self.listSize
-                fprintf(", ");
-                self.list(i).printEvent();
-            end 
-            fprintf("\n");
+            if self.listSize > 0
+                fprintf("FEL: (%d, %s)", self.list(1).time, self.list(1).type);
+                for i = 2:self.listSize
+                    fprintf(", ");
+                    self.list(i).printEvent();
+                end 
+                fprintf("\n");
+            elseif self.listSize == 1
+                fprintf("FEL: (%d, %s)\n", self.list(1).time, self.list(1).type);
+            else
+                fprintf("FEL: empty\n");
+            end
         end
     end
 end

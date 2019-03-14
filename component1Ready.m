@@ -7,8 +7,12 @@ function component1Ready()
     global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3 inspectorOneBlocked FEL;
     global alternativeStrategy alternativePriority lastQueueC1PlacedIn;
     global P1InProduction P2InProduction P3InProduction;
+    global verbose;
     
     if queueC1W1 == 2 && queueC1W2 == 2 && queueC1W3 == 2
+        if verbose
+            fprintf("inspector 1 blocked\n");
+        end
         %all queues full, block inspector one
         inspectorOneBlocked = true;
     else
@@ -60,25 +64,35 @@ function component1Ready()
                 end
             end
         end
-        %by now, a component should have been placed, we can verify
-        %this by uncommenting the following 2 lines:
-        fprintf("component one placed = %d\n", componentPlaced);
-        fprintf("component one last placed in workstation %d queue\n", lastQueueC1PlacedIn);
+        if verbose
+            fprintf("component one placed in workstation %d queue\n", lastQueueC1PlacedIn);
+        end
         
         %we know a component has been placed in a queue, can we now make a product?
         if lastQueueC1PlacedIn == 1 && ~P1InProduction%we can make a product 1
             queueC1W1 = queueC1W1 - 1;
             P1InProduction = true;
+            if verbose
+                fprintf("product 1 production started\n");
+            end
             %TO DO: clear workstation idle bit, generate P1BuiltEvent
-        elseif lastQueueC1PlacedIn == 2 && queueC2W2 > 0 && P2InProduction%we can make a product 2
+        end
+        if lastQueueC1PlacedIn == 2 && queueC2W2 > 0 && ~P2InProduction%we can make a product 2
             queueC1W2 = queueC1W2 - 1;
             queueC2W2 = queueC2W2 - 1;
             P2InProduction = true;
+            if verbose
+                fprintf("product 2 production started\n");
+            end
             %TO DO: clear workstation idle bit, generate P2BuiltEvent
-        elseif lastQueueC1PlacedIn == 2 && queueC3W3 > 0 && ~P3InProduction%we can make a product 3
+        end
+        if lastQueueC1PlacedIn == 3 && queueC3W3 > 0 && ~P3InProduction%we can make a product 3
             queueC1W3 = queueC1W3 - 1;
             queueC3W3 = queueC3W3 - 1;
             P3InProduction = true;
+            if verbose
+                fprintf("product 3 production started\n");
+            end
             %TO DO: clear workstation idle bit, generate P3BuiltEvent
         end 
         %at this point, we have started building any products that can be

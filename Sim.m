@@ -1,13 +1,17 @@
 %Main control flow for the queuing system simulation.
 
 %variables which affect program control flow
-global alternativeStrategy alternativePriority maxSimulationTime;
+global alternativeStrategy alternativePriority maxSimulationTime verbose;
 filename = "SimResults.txt"; %change to set the filename/path for the simulaiton output
 maxSimulationTime = 100; %change to set the length of time the simulation runs
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
+verbose = true; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
+if verbose
+    fprintf("initailizing variables...\n");
+end
 %number value representing the amount of time passed in the simulation
 global clock;
 %six distributiuon objects for service times of each inspector/workstation
@@ -33,13 +37,24 @@ global inspectorOneBlocked inspectorTwoBlocked;
 initializeGlobals();
 initializeDistributions();
 initializeFEL();
-
 %main program loop - while FEL not empty, process the next event
+if verbose
+    fprintf("begining main program loop...\n");
+end
 while FEL.listSize > 0
+    if verbose
+        fprintf("\n");
+        FEL.printList();
+    end
    [nextEvent, FEL] = FEL.getNextEvent();
     processEvent(nextEvent);
 end
 %processed all events - write statistics to file
+if verbose
+    fprintf("\n");
+    FEL.printList();
+    fprintf("printing results...\n");
+end
 fd = fopen(filename, 'w');
 fprintf(fd, "Total simulation time: %f seconds\n", clock);
 fprintf(fd, "Number of product 1 produced: %d\n", P1Produced);
@@ -51,6 +66,9 @@ fprintf(fd, "Time workstation one spent idle: %f seconds\n", Workstation1IdleTim
 fprintf(fd, "Time workstation two spent idle: %f seconds\n", Workstation2IdleTime);
 fprintf(fd, "Time workstation three spent idle: %f seconds\n", Workstation3IdleTime);
 fclose(fd);
+if verbose
+    fprintf("simulation complete!\n");
+end
 %END OF MAIN CONTROL FLOW
 
 %creates the 6 distribution functions with parameters determined through 
@@ -67,7 +85,7 @@ end
 
 %initializes the FEL with the first events for the simulation
 function initializeFEL()
-    global FEL;
+    global FEL verbose;
     %create first ready event for Inspector 2
     e1 = getNextInspector1Event();
     %create first ready event for Inspector 2
@@ -75,6 +93,10 @@ function initializeFEL()
     %create FEL
     FEL = FutureEventList(e1);
     FEL = FEL.addEvent(e2);
+    if verbose
+        fprintf("initial ");
+        FEL.printList();
+    end
 end
 
 %initializes each global to starting values
@@ -117,9 +139,12 @@ end
 
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
-    global clock;
+    global clock verbose FEL;
     clock = e.time;
 
+    if verbose
+        fprintf("processing %s event\n", e.type);
+    end
     if e.type == EventType.C1Ready
         component1Ready();
     elseif e.type == EventType.C2Ready
