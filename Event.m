@@ -10,8 +10,13 @@ classdef Event
     methods
         %Constructor
         function obj = Event(eventTime, eventType)
-            obj.time = eventTime;
-            obj.type = eventType;
+            global maxSimulationTime;
+            if maxSimulationTime > eventTime %only create event if time is before end of simulation
+                obj.time = eventTime;
+                obj.type = eventType;
+            else
+                obj = 0; %matlab has no NULL value so we use 0
+            end
         end 
         %prints and event in a readable format
         function printEvent(self)

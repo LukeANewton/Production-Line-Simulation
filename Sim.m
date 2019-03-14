@@ -21,11 +21,14 @@ global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
 global P1Produced P2Produced P3Produced;
 %integer indicating the last queue a C1 was placed in
 global lastQueueC1PlacedIn;
+%integer (2 or 3) defining the type of component inspector 2 most recently
+%insepceted/is inspecting
+global lastComponentInspector2Held;
 %six integers representing the size of each queue in the system
 global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
 %boolean values indicating if a product is currently in production
 global P1InProduction P2InProduction P3InProduction;
-%boolean values which indicate if each inpector is blocked
+%boolean values which indicate if each inpector/workstation is blocked
 global inspectorOneBlocked inspectorTwoBlocked;
 initializeGlobals();
 initializeDistributions();
@@ -115,7 +118,6 @@ end
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
     global clock;
-    %advance simulation time to event time
     clock = e.time;
 
     if e.type == EventType.C1Ready
