@@ -70,4 +70,5 @@ TODO:
 15. component1Ready.m: if we now have all the components to create product 1 (and a product 1 is not in production), unblock workstation 1 and generate P1Built event
 16. component1Ready.m: if we now have all the components to create product 2 (and a product 2 is not in production), unblock workstation 2 and generate P2Built event
 17. component1Ready.m: if we now have all the components to create product 3 (and a product 3 is not in production), unblock workstation 3 and generate P3Built event
-18. write report section for deliverable 2
+18. (optional) complete verbose mode
+19. write report section for deliverable 2
