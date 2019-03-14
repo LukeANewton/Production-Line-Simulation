@@ -2,7 +2,7 @@
 %An event consists of the time the event occurs and the type of event.
 classdef Event
     properties
-        %the time the eveent occurs at
+        %the time the event occurs at
         time
         %the type of event
         type
@@ -11,11 +11,11 @@ classdef Event
         %Constructor
         function obj = Event(eventTime, eventType)
             global maxSimulationTime;
-            if maxSimulationTime > eventTime %only create event if time is before end of simulation
+            if maxSimulationTime > eventTime %only create valid event if time is before end of simulation
                 obj.time = eventTime;
                 obj.type = eventType;
             else
-                obj = 0; %matlab has no NULL value so we use 0
+                obj.type = EventType.invalid;
             end
         end 
         %prints and event in a readable format

@@ -11,12 +11,13 @@ classdef FutureEventList
     methods
         %Constructor
         function FEL = FutureEventList(firstEvent)
-            FEL.list = firstEvent;
-            FEL.listSize = 1;
+            FEL.listSize = 0;
+            FEL.list = [];
+            FEL.addEvent(firstEvent);
         end 
         %adds newEvent into list in correct chronological position
         function self = addEvent(self, newEvent)
-            if newEvent ~= 0 %do not place null events into the list
+            if newEvent.type ~= EventType.invalid %do not place invalid events into the list
                 added = false;
                 for i = 1:self.listSize
                     %place the new event before the first event with a later time
