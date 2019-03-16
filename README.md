@@ -72,7 +72,7 @@ TODO:\
 15a. component1Ready.m: if we now have all the components to create product 1 (and a product 1 is not in production), unblock workstation 1 and ...\
 ~~15b. ... generate P1Built event~~\
 16a. component1Ready.m: if we now have all the components to create product 2 (and a product 2 is not in production), unblock workstation 2 and ...\
-~~16b. ... generate P2Built event~~
+~~16b. ... generate P2Built event~~\
 17a. component1Ready.m: if we now have all the components to create product 3 (and a product 3 is not in production), unblock workstation 3 and ...\
 ~~17b. ... generate P3Built event~~\
 18. (optional) complete verbose mode\
