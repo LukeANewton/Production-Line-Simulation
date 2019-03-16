@@ -52,7 +52,7 @@ productThreeBuilt.m contains a function which processes P3Built events.
 Sim.m contains the main control flow for the simulation.
 
 ----------------------------------------------------------------------------------------------------------------------------------
-TODO:
+TODO:\
 ~~1. productOneBuilt.m: generate next P1Built event if the components are availble to make another~~\
 2. productOneBuilt.m: block workstation 1 if there are no parts available to make another product 1\
 3. productOneBuilt.m: if we're creating another product 1 imediately, unblock inspector 1 becasue there will now be space for him to place his component\
