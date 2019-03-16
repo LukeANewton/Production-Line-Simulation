@@ -1,25 +1,33 @@
 % Product 3
 function productThreeBuilt()
-    global queueC1W3 queueC3W3 inspectorOneBlocked inspectorTwoBlocked
-    % Check if queues are empty
+    global queueC1W3 queueC3W3;
+    global inspectorOneBlocked inspectorThreeBlocked;
+    global W3Dist FEL clock P3Produced;
+    global lastComponentInspector2Held;
+    
     if isQueueEmpty(queueC1W3) && isQueueEmpty(queueC3W3)
        %TO DO: Set W3 to idle     
-    % Not empty, so decrement queue size
     else 
         queueC1W3 = queueC1W3 - 1;
         queueC3W3 = queueC3W3 - 1;
-        % Is inspector 1 blocked
         if inspectorOneBlocked
             inspectorOneBlocked = false;
-            %TODO: generate C1Ready event AT CURRENT TIME, this will cause the inspector to
-            %try to place it's component again
+            % Generates C1Ready event AT CURRENT TIME
+            % This causes the inspector to try to place it's component again
+            eC1 = Event(clock, EventType.C1Ready);
+            FEL.addEvent(eC1);
         end
-        % Is inspector 2 blocked
-        if inspectorTwoBlocked %TODO: and only if he is holding a C3!
-            inspectorTwoBlocked = false;
-            %TODO: generate C2=3Ready event AT CURRENT TIME, this will cause the inspector to
-            %try to place it's component again
+        if inspectorThreeBlocked == true && lastComponentInspector2Held == 3% blocked and only if he is holding a C3!
+            inspectorThreeBlocked = false;
+            % Generates C3Ready event AT CURRENT TIME
+            % This causes the inspector to try to place it's component again
+            eC3 = Event(clock, EventType.C3Ready);
+            FEL.addEvent(eC3);
         end  
-        %TO DO: Generate next P3Build Event
+        % Generate next P3Build Event and add it to FEL
+         timeToAssemble = random(W3Dist);
+         eP3 = Event(clock + timeToAssemble, EventType.P3Built);
+         FEL.addEvent(eP3);
+         P3Produced = P3Produced + 1;
     end 
 end
