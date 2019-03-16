@@ -5,6 +5,7 @@
 function component2Ready()
     global queueC1W2 queueC2W2 inspectorTwoBlocked FEL;
     global P2InProduction verbose;
+    global W2Dist clock P2Produced;
     
     if queueC2W2 == 2%cannot place component in queue if queue is full
         inspectorTwoBlocked = true;
@@ -20,7 +21,13 @@ function component2Ready()
             if verbose
                 fprintf("product 2 production started\n");
             end
-            %TO DO: clear workstation idle bit, generate P2BuiltEvent
+            %TO DO: clear workstation idle bit
+            
+            %generate P2BuiltEvent
+            timeToAssemble = random(W2Dist);
+            eP2 = Event(clock + timeToAssemble, EventType.P2Built);
+            FEL.addEvent(eP2);
+            P2Produced = P2Produced + 1;
         else
             queueC2W2 = queueC2W2 + 1;
         end  

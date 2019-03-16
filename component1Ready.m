@@ -8,6 +8,9 @@ function component1Ready()
     global alternativeStrategy alternativePriority lastQueueC1PlacedIn;
     global P1InProduction P2InProduction P3InProduction;
     global verbose;
+    global clock;
+    global W1Dist W2Dist W3Dist;
+    global P1Produced P2Produced P3Produced;
     
     if queueC1W1 == 2 && queueC1W2 == 2 && queueC1W3 == 2
         if verbose
@@ -75,7 +78,14 @@ function component1Ready()
             if verbose
                 fprintf("product 1 production started\n");
             end
-            %TO DO: clear workstation idle bit, generate P1BuiltEvent
+            %TO DO: clear workstation idle bit
+            
+            %generate P1BuiltEvent
+            timeToAssemble = random(W1Dist);
+            eP1 = Event(clock + timeToAssemble, EventType.P1Built);
+            FEL.addEvent(eP1);
+            P1Produced = P1Produced + 1;
+            
         end
         if lastQueueC1PlacedIn == 2 && queueC2W2 > 0 && ~P2InProduction%we can make a product 2
             queueC1W2 = queueC1W2 - 1;
@@ -84,7 +94,13 @@ function component1Ready()
             if verbose
                 fprintf("product 2 production started\n");
             end
-            %TO DO: clear workstation idle bit, generate P2BuiltEvent
+            %TO DO: clear workstation idle bit
+            
+            %generate P2BuiltEvent
+            timeToAssemble = random(W2Dist);
+            eP2 = Event(clock + timeToAssemble, EventType.P2Built);
+            FEL.addEvent(eP2);
+            P2Produced = P2Produced + 1;
         end
         if lastQueueC1PlacedIn == 3 && queueC3W3 > 0 && ~P3InProduction%we can make a product 3
             queueC1W3 = queueC1W3 - 1;
@@ -93,7 +109,13 @@ function component1Ready()
             if verbose
                 fprintf("product 3 production started\n");
             end
-            %TO DO: clear workstation idle bit, generate P3BuiltEvent
+            %TO DO: clear workstation idle bit
+            
+            %generate P3BuiltEvent
+            timeToAssemble = random(W3Dist);
+            eP3 = Event(clock + timeToAssemble, EventType.P3Built);
+            FEL.addEvent(eP3);
+            P3Produced = P3Produced + 1;
         end 
         %at this point, we have started building any products that can be
         %built, all that is left to do is begin inspecting the next

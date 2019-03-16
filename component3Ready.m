@@ -5,6 +5,7 @@
 function component3Ready()
     global queueC1W3 queueC3W3 inspectorTwoBlocked FEL;
     global P3InProduction verbose;
+    global W3Dist clock P3Produced;
     
     if queueC3W3 == 2%cannot place component in queue if queue is full
         inspectorTwoBlocked = true;
@@ -20,7 +21,13 @@ function component3Ready()
             if verbose
                 fprintf("product 3 production started\n");
             end
-            %TO DO: clear workstation idle bit, generate P3BuiltEvent
+            %TO DO: clear workstation idle bit
+            
+            %generate P3BuiltEvent
+            timeToAssemble = random(W3Dist);
+            eP3 = Event(clock + timeToAssemble, EventType.P3Built);
+            FEL.addEvent(eP3);
+            P3Produced = P3Produced + 1;
         else
             queueC3W3 = queueC3W3 + 1;
         end  
