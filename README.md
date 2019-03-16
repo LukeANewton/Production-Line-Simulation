@@ -76,4 +76,4 @@ TODO:\
 17a. component1Ready.m: if we now have all the components to create product 3 (and a product 3 is not in production), unblock workstation 3 and ...\
 ~~17b. ... generate P3Built event~~\
 18. (optional) complete verbose mode\
-19. write report section for deliverable 2\
+19. write report section for deliverable 2
