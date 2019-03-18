@@ -40,9 +40,8 @@ function productTwoBuilt()
             FEL = FEL.addEvent(eC2);
         end  
         % Generate next P2Build Event and add it to FEL
-         timeToAssemble = random(W2Dist);
          P2InProduction = true;
-         eP2 = Event(clock + timeToAssemble, EventType.P2Built);
+         eP2 = Event(clock + random(W2Dist), EventType.P2Built);
          FEL = FEL.addEvent(eP2);
     end 
 end

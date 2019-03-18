@@ -1,5 +1,5 @@
 %Main control flow for the queuing system simulation.
-clc; clear;
+clc; clear; %clear workspace and command window
 
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime verbose;
@@ -145,11 +145,11 @@ function initializeGlobals()
     P1Produced = 0;
     P2Produced = 0;
     P3Produced = 0;
-    %workstations start as idle since empty
+    %workstations start as idle since they at time 0 they are not producing
     workstationOneIdle = true;
     workstationTwoIdle = true;
     workstationThreeIdle = true;
-    %at beginning, all are zero
+    %at time zero, all idle times start at zero
     idleStartW1 = 0;
     idleEndW1 = 0;
     idleStartW2 = 0;
@@ -164,7 +164,7 @@ end
 
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
-    global clock verbose FEL;
+    global clock verbose;
     clock = e.time;
 
     if verbose

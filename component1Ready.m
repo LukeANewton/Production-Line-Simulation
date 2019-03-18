@@ -15,7 +15,7 @@ function component1Ready()
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
     global idleStartI1;
     
-    if queueC1W1 == 2 && queueC1W2 == 2 && queueC1W3 == 2
+    if isQueueFull(queueC1W1) && isQueueFull(queueC1W2) && isQueueFull(queueC1W3)
         if verbose
             fprintf("inspector 1 blocked\n");
         end
@@ -30,43 +30,43 @@ function component1Ready()
             if lastQueueC1PlacedIn == 0 || lastQueueC1PlacedIn == 3
                 componentPlaced = attemptC1W1Placement(componentPlaced);
                 componentPlaced = attemptC1W2Placement(componentPlaced);
-                componentPlaced = attemptC1W3Placement(componentPlaced);
+                attemptC1W3Placement(componentPlaced);
             elseif lastQueueC1PlacedIn == 1
                 componentPlaced = attemptC1W2Placement(componentPlaced);
                 componentPlaced = attemptC1W3Placement(componentPlaced);
-                componentPlaced = attemptC1W1Placement(componentPlaced);
+                attemptC1W1Placement(componentPlaced);
             elseif lastQueueC1PlacedIn == 2
                 componentPlaced = attemptC1W3Placement(componentPlaced);
                 componentPlaced = attemptC1W1Placement(componentPlaced);
-                componentPlaced = attemptC1W2Placement(componentPlaced);
+                attemptC1W2Placement(componentPlaced);
             end
         else %use original place in smallest queue approach
             if queueC1W1 < queueC1W2 && queueC1W1 < queueC1W3 %C1 queue is smallest
-                componentPlaced = attemptC1W1Placement(componentPlaced);
+                attemptC1W1Placement(componentPlaced);
             elseif queueC1W2 < queueC1W1 && queueC1W2 < queueC1W3 %C2 queue is smallest
-                componentPlaced = attemptC1W2Placement(componentPlaced);
+                attemptC1W2Placement(componentPlaced);
             elseif queueC1W3 < queueC1W2 && queueC1W3 < queueC1W1 %C3 queue is smallest
-                componentPlaced = attemptC1W3Placement(componentPlaced);
+                attemptC1W3Placement(componentPlaced);
             else %two queue have the same size
                 if alternativePriority %use alternative priority of workstations 3, then 2, then 1
                     if queueC1W1 == queueC1W2 && queueC1W1 == queueC1W3 %all queues the same size
-                        componentPlaced = attemptC1W3Placement(componentPlaced);
+                        attemptC1W3Placement(componentPlaced);
                     elseif queueC1W1 == queueC1W2 %workstation 1 and 2 have same queue length
-                        componentPlaced = attemptC1W2Placement(componentPlaced);
+                        attemptC1W2Placement(componentPlaced);
                     elseif queueC1W1 == queueC1W3 %workstation 1 and 3 have same queue length
-                        componentPlaced = attemptC1W3Placement(componentPlaced);
+                        attemptC1W3Placement(componentPlaced);
                     elseif queueC1W3 == queueC1W2 %workstation 3 and 2 have same queue length
-                        componentPlaced = attemptC1W3Placement(componentPlaced);
+                        attemptC1W3Placement(componentPlaced);
                     end
                 else %use original priority of workstations 1, then 2, then 3
                     if queueC1W1 == queueC1W2 && queueC1W1 == queueC1W3 %all queues the same size
-                        componentPlaced = attemptC1W1Placement(componentPlaced);
+                        attemptC1W1Placement(componentPlaced);
                     elseif queueC1W1 == queueC1W2 %workstation 1 and 2 have same queue length
-                        componentPlaced = attemptC1W1Placement(componentPlaced);
+                        attemptC1W1Placement(componentPlaced);
                     elseif queueC1W1 == queueC1W3 %workstation 1 and 3 have same queue length
-                        componentPlaced = attemptC1W1Placement(componentPlaced);
+                        attemptC1W1Placement(componentPlaced);
                     elseif queueC1W3 == queueC1W2 %workstation 3 and 2 have same queue length
-                        componentPlaced = attemptC1W2Placement(componentPlaced);
+                        attemptC1W2Placement(componentPlaced);
                     end
                 end
             end
@@ -91,8 +91,7 @@ function component1Ready()
             Workstation1IdleTime = Workstation1IdleTime + difference;
             
             %generate P1BuiltEvent
-            timeToAssemble = random(W1Dist);
-            eP1 = Event(clock + timeToAssemble, EventType.P1Built);
+            eP1 = Event(clock + random(W1Dist), EventType.P1Built);
             FEL = FEL.addEvent(eP1);
         end
         if ~isQueueEmpty(queueC1W2) && ~isQueueEmpty(queueC2W2) && ~P2InProduction%we can make a product 2
