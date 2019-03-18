@@ -32,8 +32,12 @@ global lastComponentInspector2Held;
 global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
 %boolean values indicating if a product is currently in production
 global P1InProduction P2InProduction P3InProduction;
-%boolean values which indicate if each inpector/workstation is blocked
+%boolean values which indicate if each inpector is blocked
 global inspectorOneBlocked inspectorTwoBlocked;
+%boolean values which indicate if each workstation is idle
+global workstationOneIdle workstationTwoIdle workstationThreeIdle;
+%six integers representing start/stop times for each workstation being idle
+global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
 initializeGlobals();
 initializeDistributions();
 initializeFEL();
@@ -108,6 +112,8 @@ function initializeGlobals()
     global lastQueueC1PlacedIn;
     global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
     global inspectorOneBlocked inspectorTwoBlocked;
+    global workstationOneIdle workstationTwoIdle workstationThreeIdle;
+    global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
     %simulation time starts at 0
     clock = 0;
     %all queues start empty
@@ -135,6 +141,17 @@ function initializeGlobals()
     P1Produced = 0;
     P2Produced = 0;
     P3Produced = 0;
+    %workstations start as idle since empty
+    workstationOneIdle = true;
+    workstationTwoIdle = true;
+    workstationThreeIdle = true;
+    %at beginning, all are zero
+    idleStartW1 = 0;
+    idleEndW1 = 0;
+    idleStartW2 = 0;
+    idleEndW2 = 0;
+    idleStartW3 = 0;
+    idleEndW3 = 0;
 end
 
 %performs some action in the simulation depending on the type of the event

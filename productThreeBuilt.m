@@ -4,13 +4,16 @@ function productThreeBuilt()
     global inspectorOneBlocked inspectorThreeBlocked;
     global W3Dist FEL clock P3Produced;
     global lastComponentInspector2Held;
+    global workstationThreeIdle idleStartW3;
     
     if isQueueEmpty(queueC1W3) && isQueueEmpty(queueC3W3)
-       %TO DO: Set W3 to idle     
+       workstationThreeIdle = true;
+       % Read the CURRENT time for when the workstation starts being idle
+       idleStartW3 = clock; 
     else 
         queueC1W3 = queueC1W3 - 1;
         queueC3W3 = queueC3W3 - 1;
-        if inspectorOneBlocked
+        if inspectorOneBlocked == true
             inspectorOneBlocked = false;
             % Generates C1Ready event AT CURRENT TIME
             % This causes the inspector to try to place it's component again

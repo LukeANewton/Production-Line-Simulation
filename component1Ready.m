@@ -11,6 +11,9 @@ function component1Ready()
     global clock;
     global W1Dist W2Dist W3Dist;
     global P1Produced P2Produced P3Produced;
+    global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
+    global workstationOneIdle workstationTwoIdle workstationThreeIdle;
+    global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
     
     if queueC1W1 == 2 && queueC1W2 == 2 && queueC1W3 == 2
         if verbose
@@ -78,7 +81,15 @@ function component1Ready()
             if verbose
                 fprintf("product 1 production started\n");
             end
-            %TO DO: clear workstation idle bit
+            
+            %clear workstation idle bit and increment workstation idle time
+            workstationOneIdle = false;
+            idleEndW1 = clock;            
+            difference = idleEndW1 - idleStartW1;
+            Workstation1IdleTime = Workstation1IdleTime + difference;
+            %safety measure to make sure we don't accidently add idle time
+            idleStartW1 = 0;
+            idleEndW1 = 0;
             
             %generate P1BuiltEvent
             timeToAssemble = random(W1Dist);
@@ -94,7 +105,15 @@ function component1Ready()
             if verbose
                 fprintf("product 2 production started\n");
             end
-            %TO DO: clear workstation idle bit
+            
+            %clear workstation idle bit and increment workstation idle time
+            workstationTwoIdle = false;
+            idleEndW2 = clock;            
+            difference = idleEndW2 - idleStartW2;
+            Workstation2IdleTime = Workstation2IdleTime + difference;
+            %safety measure to make sure we don't accidently add idle time
+            idleStartW2 = 0;
+            idleEndW2 = 0;
             
             %generate P2BuiltEvent
             timeToAssemble = random(W2Dist);
@@ -109,7 +128,15 @@ function component1Ready()
             if verbose
                 fprintf("product 3 production started\n");
             end
-            %TO DO: clear workstation idle bit
+            
+            %clear workstation idle bit and increment workstation idle time
+            workstationThreeIdle = false;
+            idleEndW3 = clock;            
+            difference = idleEndW3 - idleStartW3;
+            Workstation3IdleTime = Workstation3IdleTime + difference;
+            %safety measure to make sure we don't accidently add idle time
+            idleStartW3 = 0;
+            idleEndW3 = 0;
             
             %generate P3BuiltEvent
             timeToAssemble = random(W3Dist);

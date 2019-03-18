@@ -7,8 +7,7 @@ function productOneBuilt()
 
     if isQueueEmpty(queueC1W1)
        workstationOneIdle = true;
-       % Read the CURRENT time for when the workstation starts being idle
-       idleStartW1 = clock;
+       
     else
         queueC1W1 = queueC1W1 - 1;
         if inspectorOneBlocked == true

@@ -4,13 +4,16 @@ function productTwoBuilt()
     global inspectorOneBlocked inspectorTwoBlocked;
     global W2Dist FEL clock P2Produced;
     global lastComponentInspector2Held;
+    global workstationTwoIdle idleStartW2;
     
     if isQueueEmpty(queueC1W2) && isQueueEmpty(queueC2W2)
-       %TO DO: Set W2 to idle
+       workstationTwoIdle = true;
+       % Read the CURRENT time for when the workstation starts being idle
+       idleStartW2 = clock;
     else
         queueC1W2 = queueC1W2 - 1;
         queueC2W2 = queueC2W2 - 1;
-        if inspectorOneBlocked
+        if inspectorOneBlocked == true
             inspectorOneBlocked = false;
             % Generates C1Ready event AT CURRENT TIME
             % This causes the inspector to try to place it's component again
