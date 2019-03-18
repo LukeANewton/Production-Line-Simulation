@@ -37,6 +37,7 @@ function component3Ready()
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
             FEL.addEvent(eP3);
             P3Produced = P3Produced + 1;
+            productThreeBuilt();
         else
             queueC3W3 = queueC3W3 + 1;
         end  
