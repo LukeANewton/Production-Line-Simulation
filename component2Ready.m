@@ -35,9 +35,7 @@ function component2Ready()
             %generate P2BuiltEvent
             timeToAssemble = random(W2Dist);
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
-            FEL.addEvent(eP2);
-            P2Produced = P2Produced + 1;
-            productTwoBuilt();
+            FEL = FEL.addEvent(eP2);
         else
             queueC2W2 = queueC2W2 + 1;
         end  

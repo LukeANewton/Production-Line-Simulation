@@ -35,9 +35,7 @@ function component3Ready()
             %generate P3BuiltEvent
             timeToAssemble = random(W3Dist);
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
-            FEL.addEvent(eP3);
-            P3Produced = P3Produced + 1;
-            productThreeBuilt();
+            FEL = FEL.addEvent(eP3);
         else
             queueC3W3 = queueC3W3 + 1;
         end  

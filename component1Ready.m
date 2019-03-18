@@ -94,9 +94,7 @@ function component1Ready()
             %generate P1BuiltEvent
             timeToAssemble = random(W1Dist);
             eP1 = Event(clock + timeToAssemble, EventType.P1Built);
-            FEL.addEvent(eP1);
-            P1Produced = P1Produced + 1;
-            productOneBuilt();
+            FEL = FEL.addEvent(eP1);
         end
         if lastQueueC1PlacedIn == 2 && queueC2W2 > 0 && ~P2InProduction%we can make a product 2
             queueC1W2 = queueC1W2 - 1;
@@ -118,9 +116,7 @@ function component1Ready()
             %generate P2BuiltEvent
             timeToAssemble = random(W2Dist);
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
-            FEL.addEvent(eP2);
-            P2Produced = P2Produced + 1;
-            productTwoBuilt();
+            FEL = FEL.addEvent(eP2);
         end
         if lastQueueC1PlacedIn == 3 && queueC3W3 > 0 && ~P3InProduction%we can make a product 3
             queueC1W3 = queueC1W3 - 1;
@@ -142,9 +138,7 @@ function component1Ready()
             %generate P3BuiltEvent
             timeToAssemble = random(W3Dist);
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
-            FEL.addEvent(eP3);
-            P3Produced = P3Produced + 1;
-            productThreeBuilt();
+            FEL = FEL.addEvent(eP3);
         end 
         %at this point, we have started building any products that can be
         %built, all that is left to do is begin inspecting the next
