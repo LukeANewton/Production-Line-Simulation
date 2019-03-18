@@ -1,9 +1,0 @@
-Total simulation time: 0.515938 seconds
-Number of product 1 produced: 1
-Number of product 2 produced: 1
-Number of product 3 produced: 1
-Time inspector one spent idle: 0.000000 seconds
-Time inspector two spent idle: 0.000000 seconds
-Time workstation one spent idle: 0.035108 seconds
-Time workstation two spent idle: 0.134905 seconds
-Time workstation three spent idle: 0.144379 seconds
