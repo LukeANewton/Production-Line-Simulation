@@ -9,7 +9,7 @@ function component3Ready()
     global workstationThreeIdle Workstation3IdleTime idleStartW3 idleEndW3;
     global idleStartI2;
     
-    if queueC3W3 == 2%cannot place component in queue if queue is full
+    if isQueueFull(queueC3W3)%cannot place component in queue if queue is full
         inspectorTwoBlocked = true;
         if verbose
             fprintf("inspector 2 blocked\n");
@@ -34,8 +34,7 @@ function component3Ready()
             Workstation3IdleTime = Workstation3IdleTime + difference;
             
             %generate P3BuiltEvent
-            timeToAssemble = random(W3Dist);
-            eP3 = Event(clock + timeToAssemble, EventType.P3Built);
+            eP3 = Event(clock + random(W3Dist), EventType.P3Built);
             FEL = FEL.addEvent(eP3);
         end  
         e = getNextInspector2Event();

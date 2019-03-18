@@ -28,8 +28,7 @@ function productOneBuilt()
         end
          % Generate next P1Build Event and add it to FEL
          P1InProduction = true;
-         timeToAssemble = random(W1Dist);
-         eP1 = Event(clock + timeToAssemble, EventType.P1Built);
+         eP1 = Event(clock + random(W1Dist), EventType.P1Built);
          FEL = FEL.addEvent(eP1);
     end  
 end

@@ -41,8 +41,7 @@ function productThreeBuilt()
         end  
         % Generate next P3Build Event and add it to FEL
         P3InProduction = false;
-         timeToAssemble = random(W3Dist);
-         eP3 = Event(clock + timeToAssemble, EventType.P3Built);
+         eP3 = Event(clock + random(W3Dist), EventType.P3Built);
          FEL = FEL.addEvent(eP3);
     end 
 end
