@@ -10,10 +10,10 @@ function component1Ready()
     global verbose;
     global clock;
     global W1Dist W2Dist W3Dist;
-    global P1Produced P2Produced P3Produced;
     global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
+    global idleStartI1;
     
     if queueC1W1 == 2 && queueC1W2 == 2 && queueC1W3 == 2
         if verbose
@@ -21,6 +21,7 @@ function component1Ready()
         end
         %all queues full, block inspector one
         inspectorOneBlocked = true;
+        idleStartI1 = clock;
     else
         %there is space for a component 1 somewhere, we must figure out
         %which queue to place the component in
@@ -70,12 +71,13 @@ function component1Ready()
                 end
             end
         end
+        
         if verbose
             fprintf("component one placed in workstation %d queue\n", lastQueueC1PlacedIn);
         end
         
         %we know a component has been placed in a queue, can we now make a product?
-        if lastQueueC1PlacedIn == 1 && ~P1InProduction%we can make a product 1
+        if ~isQueueEmpty(queueC1W1) && ~P1InProduction%we can make a product 1
             queueC1W1 = queueC1W1 - 1;
             P1InProduction = true;
             if verbose
@@ -87,16 +89,13 @@ function component1Ready()
             idleEndW1 = clock;            
             difference = idleEndW1 - idleStartW1;
             Workstation1IdleTime = Workstation1IdleTime + difference;
-            %safety measure to make sure we don't accidently add idle time
-            idleStartW1 = 0;
-            idleEndW1 = 0;
             
             %generate P1BuiltEvent
             timeToAssemble = random(W1Dist);
             eP1 = Event(clock + timeToAssemble, EventType.P1Built);
             FEL = FEL.addEvent(eP1);
         end
-        if lastQueueC1PlacedIn == 2 && queueC2W2 > 0 && ~P2InProduction%we can make a product 2
+        if ~isQueueEmpty(queueC1W2) && ~isQueueEmpty(queueC2W2) && ~P2InProduction%we can make a product 2
             queueC1W2 = queueC1W2 - 1;
             queueC2W2 = queueC2W2 - 1;
             P2InProduction = true;
@@ -109,16 +108,13 @@ function component1Ready()
             idleEndW2 = clock;            
             difference = idleEndW2 - idleStartW2;
             Workstation2IdleTime = Workstation2IdleTime + difference;
-            %safety measure to make sure we don't accidently add idle time
-            idleStartW2 = 0;
-            idleEndW2 = 0;
             
             %generate P2BuiltEvent
             timeToAssemble = random(W2Dist);
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
             FEL = FEL.addEvent(eP2);
         end
-        if lastQueueC1PlacedIn == 3 && queueC3W3 > 0 && ~P3InProduction%we can make a product 3
+        if ~isQueueEmpty(queueC1W3) && ~isQueueEmpty(queueC3W3) && ~P3InProduction%we can make a product 3
             queueC1W3 = queueC1W3 - 1;
             queueC3W3 = queueC3W3 - 1;
             P3InProduction = true;
@@ -131,9 +127,6 @@ function component1Ready()
             idleEndW3 = clock;            
             difference = idleEndW3 - idleStartW3;
             Workstation3IdleTime = Workstation3IdleTime + difference;
-            %safety measure to make sure we don't accidently add idle time
-            idleStartW3 = 0;
-            idleEndW3 = 0;
             
             %generate P3BuiltEvent
             timeToAssemble = random(W3Dist);

@@ -1,12 +1,13 @@
 %Main control flow for the queuing system simulation.
+clc; clear;
 
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime verbose;
 filename = "SimResults.txt"; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 100; %change to set the length of time the simulation runs
+maxSimulationTime = 50; %change to set the length of time the simulation runs
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
-verbose = true; %set true to have information on the status of the program displayed in the console window
+verbose = false; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
 if verbose
@@ -37,7 +38,9 @@ global inspectorOneBlocked inspectorTwoBlocked;
 %boolean values which indicate if each workstation is idle
 global workstationOneIdle workstationTwoIdle workstationThreeIdle;
 %six integers representing start/stop times for each workstation being idle
-global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
+global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
+%six integers representing start/stop times for each inspector being idle
+global idleStartI1 idleEndI1 idleStartI2 idleEndI2; 
 initializeGlobals();
 initializeDistributions();
 initializeFEL();
@@ -60,15 +63,15 @@ if verbose
     fprintf("printing results...\n");
 end
 fd = fopen(filename, 'w');
-fprintf(fd, "Total simulation time: %f seconds\n", clock);
+fprintf(fd, "Total simulation time: %f seconds\n\n", clock);
 fprintf(fd, "Number of product 1 produced: %d\n", P1Produced);
 fprintf(fd, "Number of product 2 produced: %d\n", P2Produced);
-fprintf(fd, "Number of product 3 produced: %d\n", P3Produced);
-fprintf(fd, "Time inspector one spent idle: %f seconds\n", Inspector1IdleTime);
-fprintf(fd, "Time inspector two spent idle: %f seconds\n", Inspector2IdleTime);
-fprintf(fd, "Time workstation one spent idle: %f seconds\n", Workstation1IdleTime);
-fprintf(fd, "Time workstation two spent idle: %f seconds\n", Workstation2IdleTime);
-fprintf(fd, "Time workstation three spent idle: %f seconds\n", Workstation3IdleTime);
+fprintf(fd, "Number of product 3 produced: %d\n\n", P3Produced);
+fprintf(fd, "Time inspector one spent idle: %f minutes\n", Inspector1IdleTime);
+fprintf(fd, "Time inspector two spent idle: %f minutes\n", Inspector2IdleTime);
+fprintf(fd, "Time workstation one spent idle: %f minutes\n", Workstation1IdleTime);
+fprintf(fd, "Time workstation two spent idle: %f minutes\n", Workstation2IdleTime);
+fprintf(fd, "Time workstation three spent idle: %f minutes\n", Workstation3IdleTime);
 fclose(fd);
 if verbose
     fprintf("simulation complete!\n");
@@ -90,7 +93,7 @@ end
 %initializes the FEL with the first events for the simulation
 function initializeFEL()
     global FEL verbose;
-    %create first ready event for Inspector 2
+    %create first ready event for Inspector 1
     e1 = getNextInspector1Event();
     %create first ready event for Inspector 2
     e2 = getNextInspector2Event();
@@ -114,6 +117,7 @@ function initializeGlobals()
     global inspectorOneBlocked inspectorTwoBlocked;
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
+    global idleStartI1 idleEndI1 idleStartI2 idleEndI2;
     %simulation time starts at 0
     clock = 0;
     %all queues start empty
@@ -124,7 +128,7 @@ function initializeGlobals()
     queueC3W3 = 0; 
     %at begining, have not placed at C1 yet
     lastQueueC1PlacedIn = 0;
-    %time starts at zero, so idel times start at 0
+    %time starts at zero, so idle times start at 0
     Inspector1IdleTime = 0;
     Inspector2IdleTime = 0;
     Workstation1IdleTime = 0;
@@ -152,6 +156,10 @@ function initializeGlobals()
     idleEndW2 = 0;
     idleStartW3 = 0;
     idleEndW3 = 0;
+    idleStartI2 = 0;
+    idleEndI2 = 0;
+    idleStartI1 = 0;
+    idleEndI1 = 0;
 end
 
 %performs some action in the simulation depending on the type of the event
