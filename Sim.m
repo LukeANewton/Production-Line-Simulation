@@ -4,11 +4,11 @@ clc; clear; %clear workspace and command window
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
 filename = 'SimResults.txt'; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 50; %change to set the length of time the simulation runs
+maxSimulationTime = 500; %change to set the length of time the simulation runs
 seed = 69; %change to set the seed used in random number generation
-alternativeStrategy = true; %set true to use alternative round-robin C1 scheduling
-alternativePriority = true; %set true to use alternative C1 queue priorities
-verbose = true; %set true to have information on the status of the program displayed in the console window
+alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
+alternativePriority = false; %set true to use alternative C1 queue priorities
+verbose = false; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
 if verbose
@@ -89,17 +89,17 @@ end
 %input modelling in deliverable 1
 function initializeDistributions()
     global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist;
-    C1Dist = makedist('Exponential', 'mu', 1/0.096545);
-    C2Dist = makedist('Exponential', 'mu', 1/0.0644);
-    C3Dist = makedist('Exponential', 'mu', 1/0.048467);
-    W1Dist = makedist('Exponential', 'mu', 1/0.217183);
-    W2Dist = makedist('Exponential', 'mu', 1/0.0902);
-    W3Dist = makedist('Exponential', 'mu', 1/0.113693);
+    C1Dist = makedist('Exponential', 'mu', 10.35791);
+    C2Dist = makedist('Exponential', 'mu', 15.537);
+    C3Dist = makedist('Exponential', 'mu', 20.63276);
+    W1Dist = makedist('Exponential', 'mu', 4.604417);
+    W2Dist = makedist('Exponential', 'mu', 11.093);
+    W3Dist = makedist('Exponential', 'mu', 8.79558);
 end
 
 function initializeRandomNumberStreams()
-    global seed
-    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3
+    global seed;
+    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3;
 
     [rngC1, rngC2, rngC3, rngW1, rngW2, rngW3] = RandStream.create('mrg32k3a', 'Seed', seed, 'NumStreams', 6);
 end
