@@ -1,6 +1,6 @@
 % Product 2
 function productTwoBuilt()
-    global queueC1W2 queueC2W2;
+    global queueC1W2 queueC2W2 verbose;
     global inspectorOneBlocked inspectorTwoBlocked;
     global W2Dist rngW2 FEL clock P2Produced P2InProduction;
     global lastComponentInspector2Held;
@@ -29,19 +29,7 @@ function productTwoBuilt()
             eC1 = Event(clock, EventType.C1Ready);
             FEL = FEL.addEvent(eC1);
         end
-        if inspectorTwoBlocked == true && lastComponentInspector2Held == 2% blocked and only if he is holding a C2!
-            inspectorTwoBlocked = false;
-            idleEndI2 = clock;
-            difference = idleEndI2 - idleStartI2;
-            Inspector2IdleTime = Inspector2IdleTime + difference;
-            % Generates C2Ready event AT CURRENT TIME
-            % This causes the inspector to try to place it's component again
-            eC2 = Event(clock, EventType.C2Ready);
-            FEL = FEL.addEvent(eC2);
-            if verbose
-                fprintf('inspector 2 unblocked\n');
-            end
-        end  
+        unblockInspector2Check(2);
         % Generate next P2Build Event and add it to FEL
         P2InProduction = true;
         %get the inspection time from entering a random numer [0, 1] into

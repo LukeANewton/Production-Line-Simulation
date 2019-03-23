@@ -46,8 +46,9 @@ global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
 global idleStartI1 idleEndI1 idleStartI2 idleEndI2; 
 %boolean value which indicates if clock has reached max simulation time
 global timeToEndSim;
-%independent random number streams for each of the 6 distriutions
-global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3
+%independent random number streams for each of the 6 distriutions plus 1
+%for deciding to inspect C2 or C3 next
+global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
 initializeGlobals();
 initializeRandomNumberStreams();
 initializeDistributions();
@@ -65,6 +66,7 @@ while FEL.listSize > 0 && ~timeToEndSim
    [nextEvent, FEL] = FEL.getNextEvent();
     processEvent(nextEvent);
     if verbose
+        fprintf('inspector 2 holding component %d\n', lastComponentInspector2Held);
         fprintf('queue C1W1: %d components\n', queueC1W1);
         fprintf('queue C1W2: %d components\n', queueC1W2);
         fprintf('queue C1W3: %d components\n', queueC1W3);
@@ -82,7 +84,8 @@ fd = fopen(filename, 'w');
 fprintf(fd, 'Total simulation time: %f seconds\n\n', clock);
 fprintf(fd, 'Number of product 1 produced: %d\n', P1Produced);
 fprintf(fd, 'Number of product 2 produced: %d\n', P2Produced);
-fprintf(fd, 'Number of product 3 produced: %d\n\n', P3Produced);
+fprintf(fd, 'Number of product 3 produced: %d\n', P3Produced);
+fprintf(fd, 'Total products produced: %d\n\n', P1Produced + P2Produced + P3Produced);
 fprintf(fd, 'Total number of component 1 used in production: %d\n', P1Produced + P2Produced + P3Produced);
 fprintf(fd, 'Total number of component 2 used in production: %d\n', P2Produced);
 fprintf(fd, 'Total number of component 3 used in production: %d\n\n', P2Produced);
@@ -117,9 +120,9 @@ end
 
 function initializeRandomNumberStreams()
     global seed;
-    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3;
+    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1;
 
-    [rngC1, rngC2, rngC3, rngW1, rngW2, rngW3] = RandStream.create('mrg32k3a', 'Seed', seed, 'NumStreams', 6);
+    [rngC1, rngC2, rngC3, rngW1, rngW2, rngW3, rand0to1] = RandStream.create('mrg32k3a', 'Seed', seed, 'NumStreams', 7);
 end
 
 %initializes the FEL with the first events for the simulation

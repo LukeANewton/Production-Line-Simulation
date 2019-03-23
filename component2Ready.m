@@ -3,18 +3,14 @@
 %component needs to be placed in the queue, we must check if we can now 
 %make any products, and we must start inspecting the next component 2 or 3.
 function component2Ready()
-    global queueC1W2 queueC2W2 queueC3W3 inspectorTwoBlocked FEL;
+    global queueC1W2 queueC2W2 queueC3W3 FEL;
     global P2InProduction verbose;
     global W2Dist rngW2 clock;
     global workstationTwoIdle Workstation2IdleTime idleStartW2 idleEndW2;
-    global idleStartI2 C2Inspected;
+    global C2Inspected;
     
     if isQueueFull(queueC2W2)%cannot place component in queue if queue is full
-        inspectorTwoBlocked = true;
-        if verbose
-            fprintf('inspector 2 blocked\n');
-        end
-        idleStartI2 = clock;
+        blockInspector2();
     else %there is space to place the component
          queueC2W2 = queueC2W2 + 1;
          C2Inspected = C2Inspected + 1;
@@ -47,6 +43,8 @@ function component2Ready()
         if ~isQueueFull(queueC3W3) || ~isQueueFull(queueC2W2)
             e = getNextInspector2Event();
             FEL = FEL.addEvent(e);
+        else
+            blockInspector2();
         end
     end
 end

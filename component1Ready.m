@@ -110,7 +110,7 @@ function component1Ready()
             idleEndW2 = clock;            
             difference = idleEndW2 - idleStartW2;
             Workstation2IdleTime = Workstation2IdleTime + difference;
-            
+            unblockInspector2Check(2);
             %generate P2BuiltEvent
             timeToAssemble = W2Dist.icdf(rand(rngW2));
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
@@ -129,7 +129,7 @@ function component1Ready()
             idleEndW3 = clock;            
             difference = idleEndW3 - idleStartW3;
             Workstation3IdleTime = Workstation3IdleTime + difference;
-            
+            unblockInspector2Check(3);
             %generate P3BuiltEvent
             timeToAssemble = W3Dist.icdf(rand(rngW3));
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
