@@ -2,7 +2,7 @@
 function productThreeBuilt()
     global queueC1W3 queueC3W3;
     global inspectorOneBlocked inspectorTwoBlocked;
-    global W3Dist FEL clock P3Produced P3InProduction;
+    global W3Dist rngW3 FEL clock P3Produced P3InProduction;
     global lastComponentInspector2Held;
     global workstationThreeIdle idleStartW3;
     global Inspector1IdleTime idleEndI1 idleStartI1;
@@ -41,7 +41,10 @@ function productThreeBuilt()
         end  
         % Generate next P3Build Event and add it to FEL
         P3InProduction = false;
-         eP3 = Event(clock + random(W3Dist), EventType.P3Built);
-         FEL = FEL.addEvent(eP3);
+        %get the inspection time from entering a random numer [0, 1] into
+        %inverse cdf
+        timeToAssemble = W3Dist.icdf(rand(rngW3));
+        eP3 = Event(clock + timeToAssemble, EventType.P3Built);
+        FEL = FEL.addEvent(eP3);
     end 
 end

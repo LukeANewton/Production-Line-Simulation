@@ -1,21 +1,27 @@
 %Generates the next C2Ready/C3Ready event for inspector 2.
 function e = getNextInspector2Event()
-    global C2Dist C3Dist queueC2W2 queueC3W3 clock lastComponentInspector2Held;
-    
+    global C2Dist C3Dist rngC2 rngC3;
+    global queueC2W2 queueC3W3 clock lastComponentInspector2Held;
     if isQueueFull(queueC2W2) %if there is no space to place a C2, pick a C3 to inspect next
-        e = Event(clock + random(C3Dist), EventType.C3Ready);
+        %get the inspection time from entering a random numer [0, 1] into
+        %inverse cdf
+        inspectionTime = C3Dist.icdf(rand(rngC3));
+        e = Event(clock + inspectionTime, EventType.C3Ready);
         lastComponentInspector2Held = 3;
     elseif isQueueFull(queueC3W3) %if there is no space to place a C3, pick a C2 to inspect next
-        e = Event(clock + random(C2Dist), EventType.C2Ready);
+        inspectionTime = C2Dist.icdf(rand(rngC2));
+        e = Event(clock + inspectionTime, EventType.C2Ready);
         lastComponentInspector2Held = 2;
     else %neither queue is full so randomly pick a C2 or C3 to inspect next
         bernoulli = rand();
         bernoulli = bernoulli > 0.5;
         if bernoulli == 1
-            e = Event(clock + random(C2Dist), EventType.C2Ready);
+            inspectionTime = C2Dist.icdf(rand(rngC2));
+            e = Event(clock + inspectionTime, EventType.C2Ready);
             lastComponentInspector2Held = 2;
         else
-            e = Event(clock + random(C3Dist), EventType.C3Ready);
+            inspectionTime = C3Dist.icdf(rand(rngC3));
+            e = Event(clock + inspectionTime, EventType.C3Ready);
             lastComponentInspector2Held = 3;
         end
     end

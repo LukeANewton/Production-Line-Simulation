@@ -5,7 +5,7 @@
 function component3Ready()
     global queueC1W3 queueC3W3 inspectorTwoBlocked FEL;
     global P3InProduction verbose;
-    global W3Dist clock;
+    global W3Dist rngW3 clock;
     global workstationThreeIdle Workstation3IdleTime idleStartW3 idleEndW3;
     global idleStartI2;
     
@@ -34,7 +34,10 @@ function component3Ready()
             Workstation3IdleTime = Workstation3IdleTime + difference;
             
             %generate P3BuiltEvent
-            eP3 = Event(clock + random(W3Dist), EventType.P3Built);
+            %get the inspection time from entering a random numer [0, 1] into
+            %inverse cdf
+            timeToAssemble = W3Dist.icdf(rand(rngW3));
+            eP3 = Event(clock + timeToAssemble, EventType.P3Built);
             FEL = FEL.addEvent(eP3);
         end  
         e = getNextInspector2Event();

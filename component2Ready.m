@@ -5,7 +5,7 @@
 function component2Ready()
     global queueC1W2 queueC2W2 inspectorTwoBlocked FEL;
     global P2InProduction verbose;
-    global W2Dist clock;
+    global W2Dist rngW2 clock;
     global workstationTwoIdle Workstation2IdleTime idleStartW2 idleEndW2;
     global idleStartI2;
     
@@ -34,7 +34,10 @@ function component2Ready()
             Workstation2IdleTime = Workstation2IdleTime + difference;
             
             %generate P2BuiltEvent
-            eP2 = Event(clock + random(W2Dist), EventType.P2Built);
+            %get the inspection time from entering a random numer [0, 1] into
+            %inverse cdf
+            timeToAssemble = W2Dist.icdf(rand(rngW2));
+            eP2 = Event(clock + timeToAssemble, EventType.P2Built);
             FEL = FEL.addEvent(eP2); 
         end  
         e = getNextInspector2Event();

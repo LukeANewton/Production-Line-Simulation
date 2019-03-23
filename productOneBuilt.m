@@ -2,7 +2,7 @@
 function productOneBuilt()
     global queueC1W1; 
     global inspectorOneBlocked;
-    global W1Dist FEL clock P1Produced P1InProduction;
+    global W1Dist rngW1 FEL clock P1Produced P1InProduction;
     global workstationOneIdle idleStartW1; 
     global idleStartI1 idleEndI1 Inspector1IdleTime;
     
@@ -28,7 +28,11 @@ function productOneBuilt()
         end
          % Generate next P1Build Event and add it to FEL
          P1InProduction = true;
-         eP1 = Event(clock + random(W1Dist), EventType.P1Built);
+         
+         %get the inspection time from entering a random numer [0, 1] into
+         %inverse cdf
+         timeToAssemble = W1Dist.icdf(rand(rngW1));
+         eP1 = Event(clock + timeToAssemble, EventType.P1Built);
          FEL = FEL.addEvent(eP1);
     end  
 end

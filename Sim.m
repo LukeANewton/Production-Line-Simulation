@@ -2,12 +2,13 @@
 clc; clear; %clear workspace and command window
 
 %variables which affect program control flow
-global alternativeStrategy alternativePriority maxSimulationTime verbose;
+global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
 filename = "SimResults.txt"; %change to set the filename/path for the simulaiton output
 maxSimulationTime = 50; %change to set the length of time the simulation runs
+seed = 69; %change to set the seed used in random number generation
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
-verbose = true; %set true to have information on the status of the program displayed in the console window
+verbose = false; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
 if verbose
@@ -41,10 +42,15 @@ global workstationOneIdle workstationTwoIdle workstationThreeIdle;
 global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
 %six integers representing start/stop times for each inspector being idle
 global idleStartI1 idleEndI1 idleStartI2 idleEndI2; 
+%boolean value which indicates if clock has reached max simulation time
 global timeToEndSim;
+%independent random number streams for each of the 6 distriutions
+global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3
 initializeGlobals();
+initializeRandomNumberStreams();
 initializeDistributions();
 initializeFEL();
+
 %main program loop - while FEL not empty, process the next event
 if verbose
     fprintf("begining main program loop...\n");
@@ -89,6 +95,13 @@ function initializeDistributions()
     W1Dist = makedist('Exponential', 'mu', 0.217183);
     W2Dist = makedist('Exponential', 'mu', 0.0902);
     W3Dist = makedist('Exponential', 'mu', 0.113693);
+end
+
+function initializeRandomNumberStreams()
+    global seed
+    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3
+
+    [rngC1, rngC2, rngC3, rngW1, rngW2, rngW3] = RandStream.create('mrg32k3a', 'Seed', seed, 'NumStreams', 6);
 end
 
 %initializes the FEL with the first events for the simulation

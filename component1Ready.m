@@ -9,7 +9,7 @@ function component1Ready()
     global P1InProduction P2InProduction P3InProduction;
     global verbose;
     global clock;
-    global W1Dist W2Dist W3Dist;
+    global W1Dist W2Dist W3Dist rngW1 rngW2 rngW3;
     global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
@@ -91,7 +91,10 @@ function component1Ready()
             Workstation1IdleTime = Workstation1IdleTime + difference;
             
             %generate P1BuiltEvent
-            eP1 = Event(clock + random(W1Dist), EventType.P1Built);
+            %get the inspection time from entering a random numer [0, 1] into
+            %inverse cdf
+            timeToAssemble = W1Dist.icdf(rand(rngW1));
+            eP1 = Event(clock + timeToAssemble, EventType.P1Built);
             FEL = FEL.addEvent(eP1);
         end
         if ~isQueueEmpty(queueC1W2) && ~isQueueEmpty(queueC2W2) && ~P2InProduction%we can make a product 2
@@ -109,7 +112,7 @@ function component1Ready()
             Workstation2IdleTime = Workstation2IdleTime + difference;
             
             %generate P2BuiltEvent
-            timeToAssemble = random(W2Dist);
+            timeToAssemble = W2Dist.icdf(rand(rngW2));
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
             FEL = FEL.addEvent(eP2);
         end
@@ -128,7 +131,7 @@ function component1Ready()
             Workstation3IdleTime = Workstation3IdleTime + difference;
             
             %generate P3BuiltEvent
-            timeToAssemble = random(W3Dist);
+            timeToAssemble = W3Dist.icdf(rand(rngW3));
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
             FEL = FEL.addEvent(eP3);
         end 

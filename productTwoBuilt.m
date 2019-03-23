@@ -2,7 +2,7 @@
 function productTwoBuilt()
     global queueC1W2 queueC2W2;
     global inspectorOneBlocked inspectorTwoBlocked;
-    global W2Dist FEL clock P2Produced P2InProduction;
+    global W2Dist rngW2 FEL clock P2Produced P2InProduction;
     global lastComponentInspector2Held;
     global workstationTwoIdle idleStartW2;
     global Inspector1IdleTime idleEndI1 idleStartI1;
@@ -40,9 +40,12 @@ function productTwoBuilt()
             FEL = FEL.addEvent(eC2);
         end  
         % Generate next P2Build Event and add it to FEL
-         P2InProduction = true;
-         eP2 = Event(clock + random(W2Dist), EventType.P2Built);
-         FEL = FEL.addEvent(eP2);
+        P2InProduction = true;
+        %get the inspection time from entering a random numer [0, 1] into
+        %inverse cdf
+        timeToAssemble = W2Dist.icdf(rand(rngW2));
+        eP2 = Event(clock + timeToAssemble, EventType.P2Built);
+        FEL = FEL.addEvent(eP2);
     end 
 end
 
