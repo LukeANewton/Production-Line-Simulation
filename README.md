@@ -78,5 +78,6 @@ TODO:
 4. ensure that clock always moves forwards for each event
 5. check that the number of products prodcued matches the number of components inspected
 6. sensitivity analysis (check that changing parameter values affects the results in the expected way)
-5. (optional) complete verbose mode
-7. write report section for deliverable 3
+7. confidence intervals for each output value
+8. (optional) complete verbose mode
+9. write report section for deliverable 3
