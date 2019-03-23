@@ -19,6 +19,9 @@ function productThreeBuilt()
         queueC1W3 = queueC1W3 - 1;
         queueC3W3 = queueC3W3 - 1;
         if inspectorOneBlocked == true
+            if verbose
+                fprintf('inspector 2 unblocked\n');
+            end
             inspectorOneBlocked = false;
             idleEndI1 = clock;
             difference = idleEndI1 - idleStartI1;
@@ -46,5 +49,8 @@ function productThreeBuilt()
         timeToAssemble = W3Dist.icdf(rand(rngW3));
         eP3 = Event(clock + timeToAssemble, EventType.P3Built);
         FEL = FEL.addEvent(eP3);
+        if verbose
+           fprintf('assembling another P3\n');
+        end
     end 
 end

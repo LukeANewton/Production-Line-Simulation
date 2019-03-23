@@ -1,6 +1,6 @@
 % Product 1
 function productOneBuilt()
-    global queueC1W1; 
+    global queueC1W1 verbose; 
     global inspectorOneBlocked;
     global W1Dist rngW1 FEL clock P1Produced P1InProduction;
     global workstationOneIdle idleStartW1; 
@@ -16,6 +16,10 @@ function productOneBuilt()
     else
         queueC1W1 = queueC1W1 - 1;
         if inspectorOneBlocked == true
+            if verbose
+                fprintf('inspector 1 unblocked\n');
+            end
+            
             inspectorOneBlocked = false;
             idleEndI1 = clock;
             difference = idleEndI1 - idleStartI1;
@@ -34,5 +38,8 @@ function productOneBuilt()
          timeToAssemble = W1Dist.icdf(rand(rngW1));
          eP1 = Event(clock + timeToAssemble, EventType.P1Built);
          FEL = FEL.addEvent(eP1);
+         if verbose
+                fprintf('assembling another P1\n');
+         end
     end  
 end

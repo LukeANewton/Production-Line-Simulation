@@ -3,7 +3,7 @@
 %The component needs to be placed in the queue, we must check if we can now 
 %make any products, and we must start inspecting the next component 2 or 3.
 function component3Ready()
-    global queueC1W3 queueC3W3 inspectorTwoBlocked FEL;
+    global queueC1W3 queueC3W3 queueC2W2 inspectorTwoBlocked FEL;
     global P3InProduction verbose;
     global W3Dist rngW3 clock;
     global workstationThreeIdle Workstation3IdleTime idleStartW3 idleEndW3;
@@ -18,6 +18,9 @@ function component3Ready()
     else %there is space to place the component
          queueC3W3 = queueC3W3 + 1;
          C3Inspected = C3Inspected + 1;
+         if verbose
+            fprintf('component three placed in workstation 3 queue\n');
+         end
         if ~isQueueEmpty(queueC1W3) && ~isQueueEmpty(queueC3W3) && ~P3InProduction 
             %start building a product if we have other components and a product
             %is not currently being produced
@@ -41,7 +44,9 @@ function component3Ready()
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
             FEL = FEL.addEvent(eP3);
         end  
-        e = getNextInspector2Event();
-        FEL = FEL.addEvent(e);
+        if ~isQueueFull(queueC3W3) || ~isQueueFull(queueC2W2)
+            e = getNextInspector2Event();
+            FEL = FEL.addEvent(e);
+        end
     end
 end

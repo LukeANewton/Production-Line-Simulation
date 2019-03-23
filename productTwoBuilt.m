@@ -38,6 +38,9 @@ function productTwoBuilt()
             % This causes the inspector to try to place it's component again
             eC2 = Event(clock, EventType.C2Ready);
             FEL = FEL.addEvent(eC2);
+            if verbose
+                fprintf('inspector 2 unblocked\n');
+            end
         end  
         % Generate next P2Build Event and add it to FEL
         P2InProduction = true;
@@ -46,6 +49,9 @@ function productTwoBuilt()
         timeToAssemble = W2Dist.icdf(rand(rngW2));
         eP2 = Event(clock + timeToAssemble, EventType.P2Built);
         FEL = FEL.addEvent(eP2);
+        if verbose
+            fprintf('assembling another P2\n');
+        end
     end 
 end
 

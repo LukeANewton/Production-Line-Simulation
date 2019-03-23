@@ -4,11 +4,11 @@ clc; clear; %clear workspace and command window
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
 filename = 'SimResults.txt'; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 50000; %change to set the length of time the simulation runs
-seed = 3; %change to set the seed used in random number generation
+maxSimulationTime = 500; %change to set the length of time the simulation runs
+seed = 420; %change to set the seed used in random number generation
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
-verbose = false; %set true to have information on the status of the program displayed in the console window
+verbose = true; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
 if verbose
@@ -64,12 +64,18 @@ while FEL.listSize > 0 && ~timeToEndSim
     end
    [nextEvent, FEL] = FEL.getNextEvent();
     processEvent(nextEvent);
+    if verbose
+        fprintf('queue C1W1: %d components\n', queueC1W1);
+        fprintf('queue C1W2: %d components\n', queueC1W2);
+        fprintf('queue C1W3: %d components\n', queueC1W3);
+        fprintf('queue C2W2: %d components\n', queueC2W2);
+        fprintf('queue C3W3: %d components\n', queueC3W3);
+    end
 end
 %processed all events - write statistics to file
 updateIdleTimes();
 if verbose
     fprintf('\n');
-    FEL.printList();
     fprintf('printing results...\n');
 end
 fd = fopen(filename, 'w');
@@ -234,6 +240,7 @@ function processEvent(e)
     clock = e.time;
 
     if verbose
+        fprintf('clock time: %f\n', clock);
         fprintf('processing %s event\n', e.type);
     end
     if e.type == EventType.C1Ready
