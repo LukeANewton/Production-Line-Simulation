@@ -4,7 +4,7 @@ clc; clear; %clear workspace and command window
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
 filename = "SimResults.txt"; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 50; %change to set the length of time the simulation runs
+maxSimulationTime = 500; %change to set the length of time the simulation runs
 seed = 69; %change to set the seed used in random number generation
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
@@ -70,7 +70,7 @@ if verbose
     fprintf("printing results...\n");
 end
 fd = fopen(filename, 'w');
-fprintf(fd, "Total simulation time: %f seconds\n\n", clock);
+fprintf(fd, 'Total simulation time: %f seconds\n\n', clock);
 fprintf(fd, "Number of product 1 produced: %d\n", P1Produced);
 fprintf(fd, "Number of product 2 produced: %d\n", P2Produced);
 fprintf(fd, "Number of product 3 produced: %d\n\n", P3Produced);
@@ -181,6 +181,10 @@ end
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
     global clock verbose timeToEndSim;
+    
+    if(clock > e.time) %program will terminate if events are not chronological
+        error('next event occurs before current simulation time.');
+    end  
     clock = e.time;
 
     if verbose
