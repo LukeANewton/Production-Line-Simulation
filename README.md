@@ -1,21 +1,35 @@
 This submission for the second deliverable of Group 18's SYSC4005 project contains 16 files:
 
 SYSC4005_Group18_Deliverable2.pdf
+
 SYSC4005_Group18_Input_Modelling.xlsx
 
 component1Ready.m
+
 component2Ready.m
+
 component3Ready.m
+
 Event.m
+
 EventType.m
+
 FutureEventList.m
+
 getNextInspector1Event.m
+
 getNextInspector2Event.m
+
 isQueueEmpty.m
+
 isQueueFull.m
+
 productOneBuilt.m
+
 productTwoBuilt.m
+
 productThreeBuilt.m
+
 Sim.m
 
 SYSC4005_Group18_Deliverable2.pdf contains the report for deliverable 2, including problem formulation, 
