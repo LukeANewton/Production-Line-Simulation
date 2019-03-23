@@ -89,12 +89,12 @@ end
 %input modelling in deliverable 1
 function initializeDistributions()
     global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist;
-    C1Dist = makedist('Exponential', 'mu', 0.096545);
-    C2Dist = makedist('Exponential', 'mu', 0.0644);
-    C3Dist = makedist('Exponential', 'mu', 0.048467);
-    W1Dist = makedist('Exponential', 'mu', 0.217183);
-    W2Dist = makedist('Exponential', 'mu', 0.0902);
-    W3Dist = makedist('Exponential', 'mu', 0.113693);
+    C1Dist = makedist('Exponential', 'mu', 1/0.096545);
+    C2Dist = makedist('Exponential', 'mu', 1/0.0644);
+    C3Dist = makedist('Exponential', 'mu', 1/0.048467);
+    W1Dist = makedist('Exponential', 'mu', 1/0.217183);
+    W2Dist = makedist('Exponential', 'mu', 1/0.0902);
+    W3Dist = makedist('Exponential', 'mu', 1/0.113693);
 end
 
 function initializeRandomNumberStreams()

@@ -43,16 +43,16 @@ classdef FutureEventList
         %prints FEL in a readable format
         function printList(self)
             if self.listSize > 0
-                fprintf("FEL: (%d, %s)", self.list(1).time, self.list(1).type);
+                fprintf('FEL: (%d, %s)', self.list(1).time, self.list(1).type);
                 for i = 2:self.listSize
-                    fprintf(", ");
+                    fprintf(', ');
                     self.list(i).printEvent();
                 end 
-                fprintf("\n");
+                fprintf('\n');
             elseif self.listSize == 1
-                fprintf("FEL: (%d, %s)\n", self.list(1).time, self.list(1).type);
+                fprintf('FEL: (%d, %s)\n', self.list(1).time, self.list(1).type);
             else
-                fprintf("FEL: empty\n");
+                fprintf('FEL: empty\n');
             end
         end
     end

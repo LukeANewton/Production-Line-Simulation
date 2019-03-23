@@ -12,7 +12,7 @@ function component2Ready()
     if isQueueFull(queueC2W2)%cannot place component in queue if queue is full
         inspectorTwoBlocked = true;
         if verbose
-            fprintf("inspector 2 blocked\n");
+            fprintf('inspector 2 blocked\n');
         end
         idleStartI2 = clock;
     else %there is space to place the component
@@ -24,7 +24,7 @@ function component2Ready()
             queueC2W2 = queueC2W2 - 1;
             P2InProduction = true;
             if verbose
-                fprintf("product 2 production started\n");
+                fprintf('product 2 production started\n');
             end
             
             %clear workstation idle bit and increment workstation idle time
