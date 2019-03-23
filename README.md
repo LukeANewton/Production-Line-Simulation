@@ -72,7 +72,7 @@ Sim.m contains the main control flow for the simulation.
 
 ----------------------------------------------------------------------------------------------------------------------------------
 TODO:
-1. ~~create different random number stream for each distribution
+1. ~~create different random number stream for each distribution~~
 2. implement mode of operation to pull service times from empirical data
 3. implement waiting time collection to do Little's Law calculations
 4. ensure that clock always moves forwards for each event
