@@ -3,16 +3,16 @@ clc; clear; %clear workspace and command window
 
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
-filename = "SimResults.txt"; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 500; %change to set the length of time the simulation runs
+filename = 'SimResults.txt'; %change to set the filename/path for the simulaiton output
+maxSimulationTime = 50; %change to set the length of time the simulation runs
 seed = 69; %change to set the seed used in random number generation
-alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
-alternativePriority = false; %set true to use alternative C1 queue priorities
-verbose = false; %set true to have information on the status of the program displayed in the console window
+alternativeStrategy = true; %set true to use alternative round-robin C1 scheduling
+alternativePriority = true; %set true to use alternative C1 queue priorities
+verbose = true; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
 if verbose
-    fprintf("initailizing variables...\n");
+    fprintf('initailizing variables...\n');
 end
 %number value representing the amount of time passed in the simulation
 global clock;
@@ -53,11 +53,11 @@ initializeFEL();
 
 %main program loop - while FEL not empty, process the next event
 if verbose
-    fprintf("begining main program loop...\n");
+    fprintf('begining main program loop...\n');
 end
 while FEL.listSize > 0 && ~timeToEndSim
     if verbose
-        fprintf("\n");
+        fprintf('\n');
         FEL.printList();
     end
    [nextEvent, FEL] = FEL.getNextEvent();
@@ -65,23 +65,23 @@ while FEL.listSize > 0 && ~timeToEndSim
 end
 %processed all events - write statistics to file
 if verbose
-    fprintf("\n");
+    fprintf('\n');
     FEL.printList();
-    fprintf("printing results...\n");
+    fprintf('printing results...\n');
 end
 fd = fopen(filename, 'w');
 fprintf(fd, 'Total simulation time: %f seconds\n\n', clock);
-fprintf(fd, "Number of product 1 produced: %d\n", P1Produced);
-fprintf(fd, "Number of product 2 produced: %d\n", P2Produced);
-fprintf(fd, "Number of product 3 produced: %d\n\n", P3Produced);
-fprintf(fd, "Time inspector one spent idle: %f minutes\n", Inspector1IdleTime);
-fprintf(fd, "Time inspector two spent idle: %f minutes\n", Inspector2IdleTime);
-fprintf(fd, "Time workstation one spent idle: %f minutes\n", Workstation1IdleTime);
-fprintf(fd, "Time workstation two spent idle: %f minutes\n", Workstation2IdleTime);
-fprintf(fd, "Time workstation three spent idle: %f minutes\n", Workstation3IdleTime);
+fprintf(fd, 'Number of product 1 produced: %d\n', P1Produced);
+fprintf(fd, 'Number of product 2 produced: %d\n', P2Produced);
+fprintf(fd, 'Number of product 3 produced: %d\n\n', P3Produced);
+fprintf(fd, 'Time inspector one spent idle: %f minutes\n', Inspector1IdleTime);
+fprintf(fd, 'Time inspector two spent idle: %f minutes\n', Inspector2IdleTime);
+fprintf(fd, 'Time workstation one spent idle: %f minutes\n', Workstation1IdleTime);
+fprintf(fd, 'Time workstation two spent idle: %f minutes\n', Workstation2IdleTime);
+fprintf(fd, 'Time workstation three spent idle: %f minutes\n', Workstation3IdleTime);
 fclose(fd);
 if verbose
-    fprintf("simulation complete!\n");
+    fprintf('simulation complete!\n');
 end
 %END OF MAIN CONTROL FLOW
 
@@ -116,7 +116,7 @@ function initializeFEL()
     FEL = FEL.addEvent(e2);
     FEL = FEL.addEvent(Event(maxSimulationTime, EventType.endOfSimulation));
     if verbose
-        fprintf("initial ");
+        fprintf('initial ');
         FEL.printList();
     end
 end
@@ -188,7 +188,7 @@ function processEvent(e)
     clock = e.time;
 
     if verbose
-        fprintf("processing %s event\n", e.type);
+        fprintf('processing %s event\n', e.type);
     end
     if e.type == EventType.C1Ready
         component1Ready();
@@ -205,6 +205,6 @@ function processEvent(e)
     elseif e.type == EventType.endOfSimulation
         timeToEndSim = true;
     else
-        error("Invalid event type");
+        error('Invalid event type');
     end
 end

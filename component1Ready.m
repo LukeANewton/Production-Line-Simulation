@@ -17,7 +17,7 @@ function component1Ready()
     
     if isQueueFull(queueC1W1) && isQueueFull(queueC1W2) && isQueueFull(queueC1W3)
         if verbose
-            fprintf("inspector 1 blocked\n");
+            fprintf('inspector 1 blocked\n');
         end
         %all queues full, block inspector one
         inspectorOneBlocked = true;
@@ -73,7 +73,7 @@ function component1Ready()
         end
         
         if verbose
-            fprintf("component one placed in workstation %d queue\n", lastQueueC1PlacedIn);
+            fprintf('component one placed in workstation %d queue\n', lastQueueC1PlacedIn);
         end
         
         %we know a component has been placed in a queue, can we now make a product?
@@ -81,7 +81,7 @@ function component1Ready()
             queueC1W1 = queueC1W1 - 1;
             P1InProduction = true;
             if verbose
-                fprintf("product 1 production started\n");
+                fprintf('product 1 production started\n');
             end
             
             %clear workstation idle bit and increment workstation idle time
@@ -102,7 +102,7 @@ function component1Ready()
             queueC2W2 = queueC2W2 - 1;
             P2InProduction = true;
             if verbose
-                fprintf("product 2 production started\n");
+                fprintf('product 2 production started\n');
             end
             
             %clear workstation idle bit and increment workstation idle time
@@ -121,7 +121,7 @@ function component1Ready()
             queueC3W3 = queueC3W3 - 1;
             P3InProduction = true;
             if verbose
-                fprintf("product 3 production started\n");
+                fprintf('product 3 production started\n');
             end
             
             %clear workstation idle bit and increment workstation idle time
