@@ -1,4 +1,4 @@
-This submission for the second deliverable of Group 18's SYSC4005 project contains 16 files:
+This submission for the second deliverable of Group 18's SYSC4005 project contains 18 files:
 
 SYSC4005_Group18_Deliverable2.pdf
 
@@ -31,6 +31,10 @@ productTwoBuilt.m
 productThreeBuilt.m
 
 Sim.m
+
+blockInspector2.m
+
+unblockInspector2Check.m
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -69,6 +73,10 @@ productTwoBuilt.m contains a function which processes P2Built events.
 productThreeBuilt.m contains a function which processes P3Built events.
 
 Sim.m contains the main control flow for the simulation.
+
+blockInspector2.m contains the function which blocks inspector 2
+
+unblockInspector2Check.m contains a function which checks whether inspector 2 should be unblocked
 
 ----------------------------------------------------------------------------------------------------------------------------------
 TODO:
