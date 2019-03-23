@@ -4,8 +4,8 @@ clc; clear; %clear workspace and command window
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
 filename = 'SimResults.txt'; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 500; %change to set the length of time the simulation runs
-seed = 69; %change to set the seed used in random number generation
+maxSimulationTime = 50000; %change to set the length of time the simulation runs
+seed = 3; %change to set the seed used in random number generation
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
 verbose = false; %set true to have information on the status of the program displayed in the console window
@@ -25,6 +25,8 @@ global Inspector1IdleTime Inspector2IdleTime;
 global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
 %integer values indicating the number of each product that has been produced
 global P1Produced P2Produced P3Produced;
+%integer values indicating the number of each component that has been inspected
+global C1Inspected C2Inspected C3Inspected;
 %integer indicating the last queue a C1 was placed in
 global lastQueueC1PlacedIn;
 %integer (2 or 3) defining the type of component inspector 2 most recently
@@ -74,6 +76,15 @@ fprintf(fd, 'Total simulation time: %f seconds\n\n', clock);
 fprintf(fd, 'Number of product 1 produced: %d\n', P1Produced);
 fprintf(fd, 'Number of product 2 produced: %d\n', P2Produced);
 fprintf(fd, 'Number of product 3 produced: %d\n\n', P3Produced);
+fprintf(fd, 'Total number of component 1 used in production: %d\n', P1Produced + P2Produced + P3Produced);
+fprintf(fd, 'Total number of component 2 used in production: %d\n', P2Produced);
+fprintf(fd, 'Total number of component 3 used in production: %d\n\n', P2Produced);
+fprintf(fd, 'Total number of component 1 used in production or in queues at end of simulation: %d\n', P1Produced + P2Produced + P3Produced + queueC1W1 + queueC1W2 + queueC1W3 + P1InProduction);
+fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n', P2Produced + queueC2W2 + P2InProduction);
+fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n\n', P3Produced + queueC3W3 + P3InProduction);
+fprintf(fd, 'Number of component 1 inspected: %d\n', C1Inspected);
+fprintf(fd, 'Number of component 2 inspected: %d\n', C2Inspected);
+fprintf(fd, 'Number of component 3 inspected: %d\n\n', C3Inspected);
 fprintf(fd, 'Time inspector one spent idle: %f minutes\n', Inspector1IdleTime);
 fprintf(fd, 'Time inspector two spent idle: %f minutes\n', Inspector2IdleTime);
 fprintf(fd, 'Time workstation one spent idle: %f minutes\n', Workstation1IdleTime);
@@ -126,6 +137,7 @@ function initializeGlobals()
     global clock Inspector1IdleTime Inspector2IdleTime timeToEndSim;
     global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
     global P1Produced P2Produced P3Produced;
+    global C1Inspected C2Inspected C3Inspected
     global P1InProduction P2InProduction P3InProduction;
     global lastQueueC1PlacedIn;
     global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
@@ -160,6 +172,10 @@ function initializeGlobals()
     P1Produced = 0;
     P2Produced = 0;
     P3Produced = 0;
+    %at begining of simulation we have not finished inspecting any components yet
+    C1Inspected = 0;
+    C2Inspected = 0;
+    C3Inspected = 0;
     %workstations start as idle since they at time 0 they are not producing
     workstationOneIdle = true;
     workstationTwoIdle = true;

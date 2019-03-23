@@ -7,7 +7,7 @@ function component2Ready()
     global P2InProduction verbose;
     global W2Dist rngW2 clock;
     global workstationTwoIdle Workstation2IdleTime idleStartW2 idleEndW2;
-    global idleStartI2;
+    global idleStartI2 C2Inspected;
     
     if isQueueFull(queueC2W2)%cannot place component in queue if queue is full
         inspectorTwoBlocked = true;
@@ -17,6 +17,7 @@ function component2Ready()
         idleStartI2 = clock;
     else %there is space to place the component
          queueC2W2 = queueC2W2 + 1;
+         C2Inspected = C2Inspected + 1;
         if ~isQueueEmpty(queueC1W2) && ~isQueueEmpty(queueC2W2) && ~P2InProduction 
             %start building a product if we have other components and a product
             %is not currently being produced

@@ -7,7 +7,7 @@ function component3Ready()
     global P3InProduction verbose;
     global W3Dist rngW3 clock;
     global workstationThreeIdle Workstation3IdleTime idleStartW3 idleEndW3;
-    global idleStartI2;
+    global idleStartI2 C3Inspected;
     
     if isQueueFull(queueC3W3)%cannot place component in queue if queue is full
         inspectorTwoBlocked = true;
@@ -17,6 +17,7 @@ function component3Ready()
         idleStartI2 = clock;
     else %there is space to place the component
          queueC3W3 = queueC3W3 + 1;
+         C3Inspected = C3Inspected + 1;
         if ~isQueueEmpty(queueC1W3) && ~isQueueEmpty(queueC3W3) && ~P3InProduction 
             %start building a product if we have other components and a product
             %is not currently being produced

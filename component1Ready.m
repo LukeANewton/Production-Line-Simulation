@@ -145,30 +145,33 @@ end
 
 % function place a component one in workstation 1 queue if there is space
 function componentPlaced = attemptC1W1Placement(componentPlaced) 
-    global queueC1W1 lastQueueC1PlacedIn;
+    global queueC1W1 lastQueueC1PlacedIn C1Inspected;
     if queueC1W1 < 2 && ~componentPlaced
         queueC1W1 = queueC1W1 + 1;
         componentPlaced = true;
+        C1Inspected = C1Inspected + 1;
         lastQueueC1PlacedIn = 1;
     end
 end
 
 % function place a component one in workstation 2 queue if there is space
 function componentPlaced = attemptC1W2Placement(componentPlaced) 
-    global queueC1W2 lastQueueC1PlacedIn;
+    global queueC1W2 lastQueueC1PlacedIn C1Inspected;
     if queueC1W2 < 2 && ~componentPlaced
         queueC1W2 = queueC1W2 + 1;
         componentPlaced = true;
+        C1Inspected = C1Inspected + 1;
         lastQueueC1PlacedIn = 2;
     end
 end
 
 % function place a component one in workstation 1 queue if there is space
 function componentPlaced = attemptC1W3Placement(componentPlaced) 
-    global queueC1W3 lastQueueC1PlacedIn;
+    global queueC1W3 lastQueueC1PlacedIn C1Inspected;
     if queueC1W3 < 2 && ~componentPlaced
         queueC1W3 = queueC1W3 + 1;
         componentPlaced = true;
+        C1Inspected = C1Inspected + 1;
         lastQueueC1PlacedIn = 3;
     end
 end
