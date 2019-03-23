@@ -76,7 +76,7 @@ TODO:
 2. implement mode of operation to pull service times from empirical data
 3. implement waiting time collection to do Little's Law calculations
 4. ~~ensure that clock always moves forwards for each event~~
-5. check that the number of products prodcued matches the number of components inspected
+5. ~~check that the number of products prodcued matches the number of components inspected~~
 6. sensitivity analysis (check that changing parameter values affects the results in the expected way)
 7. confidence intervals for each output value
 8. (optional) complete verbose mode
