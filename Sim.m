@@ -7,7 +7,7 @@ filename = "SimResults.txt"; %change to set the filename/path for the simulaiton
 maxSimulationTime = 50; %change to set the length of time the simulation runs
 alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
 alternativePriority = false; %set true to use alternative C1 queue priorities
-verbose = false; %set true to have information on the status of the program displayed in the console window
+verbose = true; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
 if verbose
@@ -41,6 +41,7 @@ global workstationOneIdle workstationTwoIdle workstationThreeIdle;
 global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
 %six integers representing start/stop times for each inspector being idle
 global idleStartI1 idleEndI1 idleStartI2 idleEndI2; 
+global timeToEndSim;
 initializeGlobals();
 initializeDistributions();
 initializeFEL();
@@ -48,7 +49,7 @@ initializeFEL();
 if verbose
     fprintf("begining main program loop...\n");
 end
-while FEL.listSize > 0
+while FEL.listSize > 0 && ~timeToEndSim
     if verbose
         fprintf("\n");
         FEL.printList();
@@ -92,7 +93,7 @@ end
 
 %initializes the FEL with the first events for the simulation
 function initializeFEL()
-    global FEL verbose;
+    global FEL verbose maxSimulationTime;
     %create first ready event for Inspector 1
     e1 = getNextInspector1Event();
     %create first ready event for Inspector 2
@@ -100,6 +101,7 @@ function initializeFEL()
     %create FEL
     FEL = FutureEventList(e1);
     FEL = FEL.addEvent(e2);
+    FEL = FEL.addEvent(Event(maxSimulationTime, EventType.endOfSimulation));
     if verbose
         fprintf("initial ");
         FEL.printList();
@@ -108,7 +110,7 @@ end
 
 %initializes each global to starting values
 function initializeGlobals()
-    global clock Inspector1IdleTime Inspector2IdleTime;
+    global clock Inspector1IdleTime Inspector2IdleTime timeToEndSim;
     global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
     global P1Produced P2Produced P3Produced;
     global P1InProduction P2InProduction P3InProduction;
@@ -160,11 +162,12 @@ function initializeGlobals()
     idleEndI2 = 0;
     idleStartI1 = 0;
     idleEndI1 = 0;
+    timeToEndSim = false;
 end
 
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
-    global clock verbose;
+    global clock verbose timeToEndSim;
     clock = e.time;
 
     if verbose
@@ -182,6 +185,8 @@ function processEvent(e)
         productTwoBuilt();
     elseif e.type == EventType.P3Built
         productThreeBuilt();
+    elseif e.type == EventType.endOfSimulation
+        timeToEndSim = true;
     else
         error("Invalid event type");
     end

@@ -10,13 +10,8 @@ classdef Event
     methods
         %Constructor
         function obj = Event(eventTime, eventType)
-            global maxSimulationTime;
-            if maxSimulationTime > eventTime %only create valid event if time is before end of simulation
-                obj.time = eventTime;
-                obj.type = eventType;
-            else
-                obj.type = EventType.invalid;
-            end
+            obj.time = eventTime;
+            obj.type = eventType;
         end 
         %prints and event in a readable format
         function printEvent(self)

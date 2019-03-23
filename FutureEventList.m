@@ -17,22 +17,20 @@ classdef FutureEventList
         end 
         %adds newEvent into list in correct chronological position
         function self = addEvent(self, newEvent)
-            if newEvent.type ~= EventType.invalid %do not place invalid events into the list
-                added = false;
-                for i = 1:self.listSize
-                    %place the new event before the first event with a later time
-                    if self.list(i).time > newEvent.time
-                        self.list = [self.list(1:(i-1)), newEvent, self.list(i:self.listSize)];
-                        added = true;
-                        break
-                    end
+            added = false;
+            for i = 1:self.listSize
+                %place the new event before the first event with a later time
+                if self.list(i).time > newEvent.time
+                    self.list = [self.list(1:(i-1)), newEvent, self.list(i:self.listSize)];
+                    added = true;
+                    break
                 end
-                %add to end of list if no later events yet
-                if ~added
-                    self.list = [self.list, newEvent];
-                end
-                self.listSize = self.listSize + 1;
             end
+            %add to end of list if no later events yet
+            if ~added
+                self.list = [self.list, newEvent];
+            end
+            self.listSize = self.listSize + 1;
         end
         %returns and removes the event at the front of the FEL
         function [nextEvent, self] = getNextEvent(self)

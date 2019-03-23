@@ -8,6 +8,6 @@
 %P3Built: Workstation 1 has produced a P3
 classdef EventType
     enumeration
-        C1Ready, C2Ready, C3Ready, P1Built, P2Built, P3Built, invalid
+        C1Ready, C2Ready, C3Ready, P1Built, P2Built, P3Built, endOfSimulation
     end
 end
