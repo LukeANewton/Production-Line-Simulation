@@ -66,6 +66,7 @@ while FEL.listSize > 0 && ~timeToEndSim
     processEvent(nextEvent);
 end
 %processed all events - write statistics to file
+updateIdleTimes();
 if verbose
     fprintf('\n');
     FEL.printList();
@@ -192,6 +193,35 @@ function initializeGlobals()
     idleStartI1 = 0;
     idleEndI1 = 0;
     timeToEndSim = false;
+end
+
+%after processing events we need to update the total idle times of each
+%entity. This is only updated elsewhere when an entity stops being idle, so
+%if the simulation ends with an entity idle its idle time value will be
+%inaccurate.
+function updateIdleTimes()
+    global clock;
+    global inspectorOneBlocked Inspector1IdleTime idleStartI1;
+    global inspectorTwoBlocked Inspector2IdleTime idleStartI2;
+    global workstationOneIdle Workstation1IdleTime idleStartW1;
+    global workstationTwoIdle Workstation2IdleTime idleStartW2;
+    global workstationThreeIdle Workstation3IdleTime idleStartW3;
+    
+    if inspectorOneBlocked
+        Inspector1IdleTime = Inspector1IdleTime + clock - idleStartI1;
+    end
+    if inspectorTwoBlocked
+        Inspector2IdleTime = Inspector2IdleTime + clock - idleStartI2;
+    end
+    if workstationOneIdle
+        Workstation1IdleTime = Workstation1IdleTime + clock - idleStartW1;
+    end
+    if workstationTwoIdle
+        Workstation2IdleTime = Workstation2IdleTime + clock - idleStartW2;
+    end
+    if workstationThreeIdle
+        Workstation3IdleTime = Workstation3IdleTime + clock - idleStartW3;
+    end
 end
 
 %performs some action in the simulation depending on the type of the event
