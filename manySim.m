@@ -1,5 +1,5 @@
 %script to run many replications of the simulation and gather results
-global seed;
+
 %number values representing how long each inspector/workstation has spent idle
 global Inspector1IdleTime Inspector2IdleTime;
 global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
@@ -7,15 +7,25 @@ global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
 global P1Produced P2Produced P3Produced;
 %integer values indicating the number of each component that has been inspected
 global C1Inspected C2Inspected C3Inspected;
+global seed;
 
-numberOfReplications = 10; %the number of times to run the simulation
+numberOfReplications = 1; %the number of times to run the simulation
 seed = 420; %seed to use for simulation
 
 initializeRandomNumberStreams(seed);
 initializeDistributions();
 
+%create directory for output files
 if ~exist('output', 'dir')
     mkdir('output');
+end
+
+%delete old output files
+oldOutput = dir('output');
+for i = 1:size(oldOutput)
+    if(regexp(oldOutput(i).name, 'replication\d+.txt'))
+         delete(strcat('output/', oldOutput(i).name));
+    end
 end
 
 %arrays to collect statistics from each replication
