@@ -1,4 +1,4 @@
-This submission for the second deliverable of Group 18's SYSC4005 project contains 18 files:
+This submission for the second deliverable of Group 18's SYSC4005 project contains 21 files:
 
 SYSC4005_Group18_Deliverable2.pdf
 
@@ -35,6 +35,12 @@ Sim.m
 blockInspector2.m
 
 unblockInspector2Check.m
+
+initializeDistributions.m
+
+initializeRandomNumberStreams.m
+
+manySim.m
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -77,6 +83,12 @@ Sim.m contains the main control flow for the simulation.
 blockInspector2.m contains the function which blocks inspector 2
 
 unblockInspector2Check.m contains a function which checks whether inspector 2 should be unblocked
+
+initializeDistributions.m contains a function which initializes the distribution objects used for service times
+
+initializeRandomNumberStreams.m contains a funciton which initializes independent random number streams for each distribution
+
+manySim.m contains a script to run multiple replications of the simulation and collect statistics from each
 
 ----------------------------------------------------------------------------------------------------------------------------------
 TODO:
