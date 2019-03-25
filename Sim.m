@@ -9,7 +9,7 @@
 %outputFileName: the filename/path for a simulation output
 function Sim(callFromCommandWindow, outputFileName)
     %variables which affect program control flow
-    global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
+    global alternativeStrategy alternativePriority maxSimulationTime seed verbose readInFilesMode;
     maxSimulationTime = 5000; %change to set the length of time the simulation runs
     alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
     alternativePriority = false; %set true to use alternative C1 queue priorities
@@ -17,6 +17,7 @@ function Sim(callFromCommandWindow, outputFileName)
     if callFromCommandWindow %only set the seed here if doing one replication
         seed = 420; %change to set the seed used in random number generation
     end
+    readInFilesMode = true; %set true if we have existing .dat files that we want to read in
     
     %initialize model
     if verbose
@@ -59,6 +60,11 @@ function Sim(callFromCommandWindow, outputFileName)
     global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
     %arrays for storing the number of items in a queue each iteration
     global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    if readInFilesMode
+        %arrays for storing the read-in distributions from the .dat files
+        global arrayReadI1C1 arrayReadI2C2 arrayReadI2C3 arrayReadW1 arrayReadW2 arrayReadW3;
+        initializeReadInValues();
+    end    
     initializeGlobals();
     if callFromCommandWindow
         initializeRandomNumberStreams(seed);
@@ -277,4 +283,64 @@ function processEvent(e)
     else
         error('Invalid event type');
     end
+end
+
+%reads in and stores the values from a .dat file into an array to be used 
+%in place of randomly generated values
+function initializeReadInValues()
+    global arrayReadI1C1 arrayReadI2C2 arrayReadI2C3 arrayReadW1 arrayReadW2 arrayReadW3;
+    arrayReadI1C1 = [];
+    arrayReadI2C2 = [];
+    arrayReadI2C3 = [];
+    arrayReadW1 = [];
+    arrayReadW2 = [];
+    arrayReadW3 = [];
+    
+    file = fopen('input data\servinsp1.dat');
+    line = fgetl(file);
+    while ischar(line)
+       arrayReadI1C1 = [arrayReadI1C1 sscanf(line, '%f')];
+       line = fgetl(file);
+    end
+    fclose(file);
+    
+    file = fopen('input data\servinsp22.dat');
+    line = fgetl(file);
+    while ischar(line)
+       arrayReadI2C2 = [arrayReadI2C2 sscanf(line, '%f')];
+       line = fgetl(file);
+    end
+    fclose(file);
+    
+    file = fopen('input data\servinsp23.dat');
+    line = fgetl(file);
+    while ischar(line)
+       arrayReadI2C3 = [arrayReadI2C3 sscanf(line, '%f')];
+       line = fgetl(file);
+    end
+    fclose(file);
+    
+    file = fopen('input data\ws1.dat');
+    line = fgetl(file);
+    while ischar(line)
+       arrayReadW1 = [arrayReadW1 sscanf(line, '%f')];
+       line = fgetl(file);
+    end
+    fclose(file);
+    
+    file = fopen('input data\ws2.dat');
+    line = fgetl(file);
+    while ischar(line)
+       arrayReadW2 = [arrayReadW2 sscanf(line, '%f')];
+       line = fgetl(file);
+    end
+    fclose(file);
+    
+    file = fopen('input data\ws3.dat');
+    line = fgetl(file);
+    while ischar(line)
+       arrayReadW3 = [arrayReadW3 sscanf(line, '%f')];
+       line = fgetl(file);
+    end
+    fclose(file);
 end
