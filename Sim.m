@@ -4,10 +4,10 @@ clc; clear; %clear workspace and command window
 %variables which affect program control flow
 global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
 filename = 'SimResults.txt'; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 500; %change to set the length of time the simulation runs
+maxSimulationTime = 10000; %change to set the length of time the simulation runs
 seed = 420; %change to set the seed used in random number generation
-alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
-alternativePriority = false; %set true to use alternative C1 queue priorities
+alternativeStrategy = true; %set true to use alternative round-robin C1 scheduling
+alternativePriority = true; %set true to use alternative C1 queue priorities
 verbose = true; %set true to have information on the status of the program displayed in the console window
 
 %initialize model
@@ -49,6 +49,8 @@ global timeToEndSim;
 %independent random number streams for each of the 6 distriutions plus 1
 %for deciding to inspect C2 or C3 next
 global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
+%arrys for storing the number of items in a queue each iteration
+global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
 initializeGlobals();
 initializeRandomNumberStreams();
 initializeDistributions();
@@ -73,6 +75,15 @@ while FEL.listSize > 0 && ~timeToEndSim
         fprintf('queue C2W2: %d components\n', queueC2W2);
         fprintf('queue C3W3: %d components\n', queueC3W3);
     end
+    % Store the number of items in each queue into an array so that we
+    % can later average them to find the average number of items in a
+    % given queue.
+    % global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    arrayC1W1 = [arrayC1W1 queueC1W1];
+    arrayC1W2 = [arrayC1W2 queueC1W2];
+    arrayC2W2 = [arrayC2W2 queueC2W2];
+    arrayC1W3 = [arrayC1W3 queueC1W3];
+    arrayC3W3 = [arrayC3W3 queueC3W3];
 end
 %processed all events - write statistics to file
 updateIdleTimes();
@@ -99,7 +110,12 @@ fprintf(fd, 'Time inspector one spent idle: %f minutes\n', Inspector1IdleTime);
 fprintf(fd, 'Time inspector two spent idle: %f minutes\n', Inspector2IdleTime);
 fprintf(fd, 'Time workstation one spent idle: %f minutes\n', Workstation1IdleTime);
 fprintf(fd, 'Time workstation two spent idle: %f minutes\n', Workstation2IdleTime);
-fprintf(fd, 'Time workstation three spent idle: %f minutes\n', Workstation3IdleTime);
+fprintf(fd, 'Time workstation three spent idle: %f minutes\n\n', Workstation3IdleTime);
+fprintf(fd, 'Average number of component 1 in queue for workstation 1: %f components\n', mean(arrayC1W1));
+fprintf(fd, 'Average number of component 1 in queue for workstation 2: %f components\n', mean(arrayC1W2));
+fprintf(fd, 'Average number of component 1 in queue for workstation 3: %f components\n', mean(arrayC1W3));
+fprintf(fd, 'Average number of component 2 in queue for workstation 2: %f components\n', mean(arrayC2W2));
+fprintf(fd, 'Average number of component 3 in queue for workstation 3: %f components\n', mean(arrayC3W3));
 fclose(fd);
 if verbose
     fprintf('simulation complete!\n');
@@ -155,6 +171,7 @@ function initializeGlobals()
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
     global idleStartI1 idleEndI1 idleStartI2 idleEndI2;
+    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
     %simulation time starts at 0
     clock = 0;
     %all queues start empty
@@ -202,6 +219,12 @@ function initializeGlobals()
     idleStartI1 = 0;
     idleEndI1 = 0;
     timeToEndSim = false;
+    %all arrays should be empty as there is no queue information to add
+    arrayC1W1 = [];
+    arrayC1W2 = [];
+    arrayC2W2 = [];
+    arrayC1W3 = [];
+    arrayC3W3 = [];
 end
 
 %after processing events we need to update the total idle times of each
