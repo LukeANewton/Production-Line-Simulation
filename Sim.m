@@ -1,144 +1,135 @@
-%Main control flow for the queuing system simulation.
-clc; clear; %clear workspace and command window
+%Main control flow for one replication of the queuing system simulation.
 
-%variables which affect program control flow
-global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
-filename = 'SimResults.txt'; %change to set the filename/path for the simulaiton output
-maxSimulationTime = 10000; %change to set the length of time the simulation runs
-seed = 420; %change to set the seed used in random number generation
-alternativeStrategy = true; %set true to use alternative round-robin C1 scheduling
-alternativePriority = true; %set true to use alternative C1 queue priorities
-verbose = true; %set true to have information on the status of the program displayed in the console window
+%callFromCommandWindow: a boolean value to indicate wether a simulation is
+%                       ran as a part of many replications, or once through 
+%                       the command window. This is need because there are 
+%                       certain initializations that should not be reperformed
+%                       if doing many replications (eg. random number
+%                       streams).
+%outputFileName: the filename/path for a simulation output
+function Sim(callFromCommandWindow, outputFileName)
+    %variables which affect program control flow
+    global alternativeStrategy alternativePriority maxSimulationTime seed verbose;
+    maxSimulationTime = 5000; %change to set the length of time the simulation runs
+    alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
+    alternativePriority = false; %set true to use alternative C1 queue priorities
+    verbose = false; %set true to have information on the status of the program displayed in the console window
+    if callFromCommandWindow %only set the seed here if doing one replication
+        seed = 420; %change to set the seed used in random number generation
+    end
+    
+    %initialize model
+    if verbose
+        fprintf('initailizing variables...\n');
+    end
+    %number value representing the amount of time passed in the simulation
+    global clock;
+    %six distributiuon objects for service times of each inspector/workstation
+    global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist;
+    %the future event list for the simulation
+    global FEL;
+    %number values representing how long each inspector/workstation has spent idle
+    global Inspector1IdleTime Inspector2IdleTime;
+    global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
+    %integer values indicating the number of each product that has been produced
+    global P1Produced P2Produced P3Produced;
+    %integer values indicating the number of each component that has been inspected
+    global C1Inspected C2Inspected C3Inspected;
+    %integer indicating the last queue a C1 was placed in
+    global lastQueueC1PlacedIn;
+    %integer (2 or 3) defining the type of component inspector 2 most recently
+    %insepceted/is inspecting
+    global lastComponentInspector2Held;
+    %six integers representing the size of each queue in the system
+    global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
+    %boolean values indicating if a product is currently in production
+    global P1InProduction P2InProduction P3InProduction;
+    %boolean values which indicate if each inpector is blocked
+    global inspectorOneBlocked inspectorTwoBlocked;
+    %boolean values which indicate if each workstation is idle
+    global workstationOneIdle workstationTwoIdle workstationThreeIdle;
+    %six integers representing start/stop times for each workstation being idle
+    global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
+    %six integers representing start/stop times for each inspector being idle
+    global idleStartI1 idleEndI1 idleStartI2 idleEndI2; 
+    %boolean value which indicates if clock has reached max simulation time
+    global timeToEndSim;
+    %independent random number streams for each of the 6 distriutions plus 1
+    %for deciding to inspect C2 or C3 next
+    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
+    %arrays for storing the number of items in a queue each iteration
+    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    initializeGlobals();
+    if callFromCommandWindow
+        initializeRandomNumberStreams(seed);
+        initializeDistributions();
+    end
+    initializeFEL();
 
-%initialize model
-if verbose
-    fprintf('initailizing variables...\n');
-end
-%number value representing the amount of time passed in the simulation
-global clock;
-%six distributiuon objects for service times of each inspector/workstation
-global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist;
-%the future event list for the simulation
-global FEL;
-%number values representing how long each inspector/workstation has spent idle
-global Inspector1IdleTime Inspector2IdleTime;
-global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
-%integer values indicating the number of each product that has been produced
-global P1Produced P2Produced P3Produced;
-%integer values indicating the number of each component that has been inspected
-global C1Inspected C2Inspected C3Inspected;
-%integer indicating the last queue a C1 was placed in
-global lastQueueC1PlacedIn;
-%integer (2 or 3) defining the type of component inspector 2 most recently
-%insepceted/is inspecting
-global lastComponentInspector2Held;
-%six integers representing the size of each queue in the system
-global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
-%boolean values indicating if a product is currently in production
-global P1InProduction P2InProduction P3InProduction;
-%boolean values which indicate if each inpector is blocked
-global inspectorOneBlocked inspectorTwoBlocked;
-%boolean values which indicate if each workstation is idle
-global workstationOneIdle workstationTwoIdle workstationThreeIdle;
-%six integers representing start/stop times for each workstation being idle
-global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
-%six integers representing start/stop times for each inspector being idle
-global idleStartI1 idleEndI1 idleStartI2 idleEndI2; 
-%boolean value which indicates if clock has reached max simulation time
-global timeToEndSim;
-%independent random number streams for each of the 6 distriutions plus 1
-%for deciding to inspect C2 or C3 next
-global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
-%arrys for storing the number of items in a queue each iteration
-global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
-initializeGlobals();
-initializeRandomNumberStreams();
-initializeDistributions();
-initializeFEL();
-
-%main program loop - while FEL not empty, process the next event
-if verbose
-    fprintf('begining main program loop...\n');
-end
-while FEL.listSize > 0 && ~timeToEndSim
+    %main program loop - while FEL not empty, process the next event
+    if verbose
+        fprintf('begining main program loop...\n');
+    end
+    while FEL.listSize > 0 && ~timeToEndSim
+        if verbose
+            fprintf('\n');
+            FEL.printList();
+        end
+       [nextEvent, FEL] = FEL.getNextEvent();
+        processEvent(nextEvent);
+        if verbose
+            fprintf('inspector 2 holding component %d\n', lastComponentInspector2Held);
+            fprintf('queue C1W1: %d components\n', queueC1W1);
+            fprintf('queue C1W2: %d components\n', queueC1W2);
+            fprintf('queue C1W3: %d components\n', queueC1W3);
+            fprintf('queue C2W2: %d components\n', queueC2W2);
+            fprintf('queue C3W3: %d components\n', queueC3W3);
+        end
+        % Store the number of items in each queue into an array so that we
+        % can later average them to find the average number of items in a
+        % given queue.
+        arrayC1W1 = [arrayC1W1 queueC1W1];
+        arrayC1W2 = [arrayC1W2 queueC1W2];
+        arrayC2W2 = [arrayC2W2 queueC2W2];
+        arrayC1W3 = [arrayC1W3 queueC1W3];
+        arrayC3W3 = [arrayC3W3 queueC3W3];
+    end
+    %processed all events - write statistics to file
+    updateIdleTimes();
     if verbose
         fprintf('\n');
-        FEL.printList();
+        fprintf('printing results...\n');
     end
-   [nextEvent, FEL] = FEL.getNextEvent();
-    processEvent(nextEvent);
+    fd = fopen(outputFileName, 'w');
+    fprintf(fd, 'Total simulation time: %f seconds\n\n', clock);
+    fprintf(fd, 'Number of product 1 produced: %d\n', P1Produced);
+    fprintf(fd, 'Number of product 2 produced: %d\n', P2Produced);
+    fprintf(fd, 'Number of product 3 produced: %d\n', P3Produced);
+    fprintf(fd, 'Total products produced: %d\n\n', P1Produced + P2Produced + P3Produced);
+    fprintf(fd, 'Total number of component 1 used in production: %d\n', P1Produced + P2Produced + P3Produced);
+    fprintf(fd, 'Total number of component 2 used in production: %d\n', P2Produced);
+    fprintf(fd, 'Total number of component 3 used in production: %d\n\n', P2Produced);
+    fprintf(fd, 'Total number of component 1 used in production or in queues at end of simulation: %d\n', P1Produced + P2Produced + P3Produced + queueC1W1 + queueC1W2 + queueC1W3 + P1InProduction);
+    fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n', P2Produced + queueC2W2 + P2InProduction);
+    fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n\n', P3Produced + queueC3W3 + P3InProduction);
+    fprintf(fd, 'Number of component 1 inspected: %d\n', C1Inspected);
+    fprintf(fd, 'Number of component 2 inspected: %d\n', C2Inspected);
+    fprintf(fd, 'Number of component 3 inspected: %d\n\n', C3Inspected);
+    fprintf(fd, 'Time inspector one spent idle: %f minutes\n', Inspector1IdleTime);
+    fprintf(fd, 'Time inspector two spent idle: %f minutes\n', Inspector2IdleTime);
+    fprintf(fd, 'Time workstation one spent idle: %f minutes\n', Workstation1IdleTime);
+    fprintf(fd, 'Time workstation two spent idle: %f minutes\n', Workstation2IdleTime);
+    fprintf(fd, 'Time workstation three spent idle: %f minutes\n\n', Workstation3IdleTime);
+    fprintf(fd, 'Average number of component 1 in queue for workstation 1: %f components\n', mean(arrayC1W1));
+    fprintf(fd, 'Average number of component 1 in queue for workstation 2: %f components\n', mean(arrayC1W2));
+    fprintf(fd, 'Average number of component 1 in queue for workstation 3: %f components\n', mean(arrayC1W3));
+    fprintf(fd, 'Average number of component 2 in queue for workstation 2: %f components\n', mean(arrayC2W2));
+    fprintf(fd, 'Average number of component 3 in queue for workstation 3: %f components\n', mean(arrayC3W3));
+    fclose(fd);
     if verbose
-        fprintf('inspector 2 holding component %d\n', lastComponentInspector2Held);
-        fprintf('queue C1W1: %d components\n', queueC1W1);
-        fprintf('queue C1W2: %d components\n', queueC1W2);
-        fprintf('queue C1W3: %d components\n', queueC1W3);
-        fprintf('queue C2W2: %d components\n', queueC2W2);
-        fprintf('queue C3W3: %d components\n', queueC3W3);
+        fprintf('simulation complete!\n');
     end
-    % Store the number of items in each queue into an array so that we
-    % can later average them to find the average number of items in a
-    % given queue.
-    % global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
-    arrayC1W1 = [arrayC1W1 queueC1W1];
-    arrayC1W2 = [arrayC1W2 queueC1W2];
-    arrayC2W2 = [arrayC2W2 queueC2W2];
-    arrayC1W3 = [arrayC1W3 queueC1W3];
-    arrayC3W3 = [arrayC3W3 queueC3W3];
-end
-%processed all events - write statistics to file
-updateIdleTimes();
-if verbose
-    fprintf('\n');
-    fprintf('printing results...\n');
-end
-fd = fopen(filename, 'w');
-fprintf(fd, 'Total simulation time: %f seconds\n\n', clock);
-fprintf(fd, 'Number of product 1 produced: %d\n', P1Produced);
-fprintf(fd, 'Number of product 2 produced: %d\n', P2Produced);
-fprintf(fd, 'Number of product 3 produced: %d\n', P3Produced);
-fprintf(fd, 'Total products produced: %d\n\n', P1Produced + P2Produced + P3Produced);
-fprintf(fd, 'Total number of component 1 used in production: %d\n', P1Produced + P2Produced + P3Produced);
-fprintf(fd, 'Total number of component 2 used in production: %d\n', P2Produced);
-fprintf(fd, 'Total number of component 3 used in production: %d\n\n', P2Produced);
-fprintf(fd, 'Total number of component 1 used in production or in queues at end of simulation: %d\n', P1Produced + P2Produced + P3Produced + queueC1W1 + queueC1W2 + queueC1W3 + P1InProduction);
-fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n', P2Produced + queueC2W2 + P2InProduction);
-fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n\n', P3Produced + queueC3W3 + P3InProduction);
-fprintf(fd, 'Number of component 1 inspected: %d\n', C1Inspected);
-fprintf(fd, 'Number of component 2 inspected: %d\n', C2Inspected);
-fprintf(fd, 'Number of component 3 inspected: %d\n\n', C3Inspected);
-fprintf(fd, 'Time inspector one spent idle: %f minutes\n', Inspector1IdleTime);
-fprintf(fd, 'Time inspector two spent idle: %f minutes\n', Inspector2IdleTime);
-fprintf(fd, 'Time workstation one spent idle: %f minutes\n', Workstation1IdleTime);
-fprintf(fd, 'Time workstation two spent idle: %f minutes\n', Workstation2IdleTime);
-fprintf(fd, 'Time workstation three spent idle: %f minutes\n\n', Workstation3IdleTime);
-fprintf(fd, 'Average number of component 1 in queue for workstation 1: %f components\n', mean(arrayC1W1));
-fprintf(fd, 'Average number of component 1 in queue for workstation 2: %f components\n', mean(arrayC1W2));
-fprintf(fd, 'Average number of component 1 in queue for workstation 3: %f components\n', mean(arrayC1W3));
-fprintf(fd, 'Average number of component 2 in queue for workstation 2: %f components\n', mean(arrayC2W2));
-fprintf(fd, 'Average number of component 3 in queue for workstation 3: %f components\n', mean(arrayC3W3));
-fclose(fd);
-if verbose
-    fprintf('simulation complete!\n');
-end
-%END OF MAIN CONTROL FLOW
-
-%creates the 6 distribution functions with parameters determined through 
-%input modelling in deliverable 1
-function initializeDistributions()
-    global C1Dist C2Dist C3Dist W1Dist W2Dist W3Dist;
-    C1Dist = makedist('Exponential', 'mu', 10.35791);
-    C2Dist = makedist('Exponential', 'mu', 15.537);
-    C3Dist = makedist('Exponential', 'mu', 20.63276);
-    W1Dist = makedist('Exponential', 'mu', 4.604417);
-    W2Dist = makedist('Exponential', 'mu', 11.093);
-    W3Dist = makedist('Exponential', 'mu', 8.79558);
-end
-
-function initializeRandomNumberStreams()
-    global seed;
-    global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1;
-
-    [rngC1, rngC2, rngC3, rngW1, rngW2, rngW3, rand0to1] = RandStream.create('mrg32k3a', 'Seed', seed, 'NumStreams', 7);
+    %END OF MAIN CONTROL FLOW
 end
 
 %initializes the FEL with the first events for the simulation
