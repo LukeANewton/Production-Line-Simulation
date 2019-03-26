@@ -256,10 +256,18 @@ end
 %performs some action in the simulation depending on the type of the event
 function processEvent(e)
     global clock verbose timeToEndSim;
+    global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
     
-    if(clock > e.time) %program will terminate if events are not chronological
+    if(clock > e.time) %each program moves forward in time only
         error('next event occurs before current simulation time.');
     end  
+    %ensure all queues are between [0, 2]
+    checkBoundries(queueC1W1, 'queueC1W1');
+    checkBoundries(queueC1W2, 'queueC2W1');
+    checkBoundries(queueC1W3, 'queueC3W1');
+    checkBoundries(queueC2W2, 'queueC2W2');
+    checkBoundries(queueC3W3, 'queueC3W3');
+    
     clock = e.time;
 
     if verbose
@@ -282,6 +290,12 @@ function processEvent(e)
         timeToEndSim = true;
     else
         error('Invalid event type');
+    end
+end
+
+function checkBoundries(queue, name)
+    if(queue < 0) || (queue > 2)
+        error('queue %s is out of acceptable range [0, 2]', name);
     end
 end
 

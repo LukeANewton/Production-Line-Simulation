@@ -1,4 +1,5 @@
 %script to run many replications of the simulation and gather results
+clear; clc;
 
 %number values representing how long each inspector/workstation has spent idle
 global Inspector1IdleTime Inspector2IdleTime;
@@ -9,7 +10,8 @@ global P1Produced P2Produced P3Produced;
 global C1Inspected C2Inspected C3Inspected;
 global seed;
 
-numberOfReplications = 1; %the number of times to run the simulation
+
+numberOfReplications = 10; %the number of times to run the simulation
 seed = 420; %seed to use for simulation
 
 initializeRandomNumberStreams(seed);
