@@ -14,8 +14,9 @@ global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
 global seed;
 %the length of one simulation run (set in Sim.m)
 global maxSimulationTime;
+global numberOfReplications
 
-numberOfReplications = 10; %the number of times to run the simulation
+numberOfReplications = 5; %the number of times to run the simulation
 seed = 420; %seed to use for simulation
 
 initializeRandomNumberStreams(seed);
@@ -76,71 +77,50 @@ for i = 1:numberOfReplications
     avgC3W3Sizes(i) = mean(arrayC3W3);
 end
 
-%collect final statistics:
+%print final statistics to file
 %average number of prodcts produced, components insepected, queue sizes
 %proportion of inspector and workstation times spent idle
-%variances for each value
-AverageP1Produced = mean(P1Productions);
-AverageP2Produced = mean(P2Productions);
-AverageP3Produced = mean(P3Productions);
-AverageTotalProduced = mean(totalProductions);
-AverageC1Inspections = mean(C1Inspections);
-AverageC2Inspections = mean(C2Inspections);
-AverageC3Inspections = mean(C3Inspections);
-AverageC1W1Size = mean(avgC1W1Sizes);
-AverageC1W2Size = mean(avgC1W2Sizes);
-AverageC1W3Size = mean(avgC1W3Sizes);
-AverageC2W2Size = mean(avgC2W2Sizes);
-AverageC3W3Size = mean(avgC3W3Sizes);
-AverageI1IdlePercent = mean(I1IdleTimes) / maxSimulationTime;
-AverageI2IdlePercent = mean(I2IdleTimes) / maxSimulationTime;
-AverageW1IdlePercent = mean(W1IdleTimes) / maxSimulationTime;
-AverageW2IdlePercent = mean(W2IdleTimes) / maxSimulationTime;
-AverageW3IdlePercent = mean(W3IdleTimes) / maxSimulationTime;
-
-VarianceP1Produced = var(P1Productions);
-VarianceP2Produced = var(P2Productions);
-VarianceP3Produced = var(P3Productions);
-VarianceTotalProduced = var(totalProductions);
-VarianceC1Inspections = var(C1Inspections);
-VarianceC2Inspections = var(C2Inspections);
-VarianceC3Inspections = var(C3Inspections);
-VarianceC1W1Size = var(avgC1W1Sizes);
-VarianceC1W2Size = var(avgC1W2Sizes);
-VarianceC1W3Size = var(avgC1W3Sizes);
-VarianceC2W2Size = var(avgC2W2Sizes);
-VarianceC3W3Size = var(avgC3W3Sizes);
-VarienceI1IdlePercent = var(I1IdleTimes/maxSimulationTime);
-VarienceI2IdlePercent = var(I2IdleTimes/maxSimulationTime);
-VarienceW1IdlePercent = var(W1IdleTimes/maxSimulationTime);
-VarienceW2IdlePercent = var(W2IdleTimes/maxSimulationTime);
-VarienceW3IdlePercent = var(W3IdleTimes/maxSimulationTime);
-
-%print final statistics to file
+%variances and CIs for each value
 fd = fopen('output/finalresults.txt', 'w');
-fprintf(fd, formatStatisticOutput('P1 Produced', AverageP1Produced, VarianceP1Produced));
-fprintf(fd, formatStatisticOutput('P2 Produced', AverageP2Produced, VarianceP2Produced));
-fprintf(fd, formatStatisticOutput('P3 Produced', AverageP3Produced, VarianceP3Produced));
-fprintf(fd, formatStatisticOutput('Total Produced', AverageTotalProduced, VarianceTotalProduced));
-fprintf(fd, formatStatisticOutput('C1 Inspected', AverageC1Inspections, VarianceC1Inspections));
-fprintf(fd, formatStatisticOutput('C2 Inspected', AverageC2Inspections, VarianceC2Inspections));
-fprintf(fd, formatStatisticOutput('C3 Inspected', AverageC3Inspections, VarianceC3Inspections));
-fprintf(fd, formatStatisticOutput('Workstation 1 C1 queue size', AverageC1W1Size, VarianceC1W1Size));
-fprintf(fd, formatStatisticOutput('Workstation 1 C2 queue size', AverageC1W2Size, VarianceC1W2Size));
-fprintf(fd, formatStatisticOutput('Workstation 1 C3 queue size', AverageC1W3Size, VarianceC1W3Size));
-fprintf(fd, formatStatisticOutput('Workstation 2 C2 queue size', AverageC2W2Size, VarianceC2W2Size));
-fprintf(fd, formatStatisticOutput('Workstation 3 C3 queue size', AverageC3W3Size, VarianceC3W3Size));
-fprintf(fd, formatStatisticOutput('Proportion of time Inspector 1 idle', AverageI1IdlePercent, VarienceI1IdlePercent));
-fprintf(fd, formatStatisticOutput('Proportion of time Inspector 2 idle', AverageI2IdlePercent, VarienceI2IdlePercent));
-fprintf(fd, formatStatisticOutput('Proportion of time Workstation 1 idle', AverageW1IdlePercent, VarienceW1IdlePercent));
-fprintf(fd, formatStatisticOutput('Proportion of time Workstation 2 idle', AverageW2IdlePercent, VarienceW2IdlePercent));
-fprintf(fd, formatStatisticOutput('Proportion of time Workstation 3 idle', AverageW3IdlePercent, VarienceW3IdlePercent));
+printStatistic(fd, 'P1 Produced', P1Productions);
+printStatistic(fd, 'P2 Produced', P2Productions);
+printStatistic(fd, 'P3 Produced', P3Productions);
+printStatistic(fd, 'Total Produced', totalProductions);
+printStatistic(fd, 'C1 Inspected', C1Inspections);
+printStatistic(fd, 'C2 Inspected', C2Inspections);
+printStatistic(fd, 'C3 Inspected', C3Inspections);
+printStatistic(fd, 'Workstation 1 C1 queue size', avgC1W1Sizes);
+printStatistic(fd, 'Workstation 2 C1 queue size', avgC1W2Sizes);
+printStatistic(fd, 'Workstation 2 C2 queue size', avgC2W2Sizes);
+printStatistic(fd, 'Workstation 3 C1 queue size', avgC1W3Sizes);
+printStatistic(fd, 'Workstation 3 C3 queue size', avgC3W3Sizes);
+printStatistic(fd, 'Proportion of time Inspector 1 idle', I1IdleTimes/maxSimulationTime);
+printStatistic(fd, 'Proportion of time Inspector 1 idle', I2IdleTimes/maxSimulationTime);
+printStatistic(fd, 'Proportion of time Workstation 1 idle', W1IdleTimes/maxSimulationTime);
+printStatistic(fd, 'Proportion of time Workstation 2 idle', W2IdleTimes/maxSimulationTime);
+printStatistic(fd, 'Proportion of time Workstation 3 idle', W3IdleTimes/maxSimulationTime);
+fclose(fd);
 
 %function to output a statistic's mean and variance in a readable format
-function outputString = formatStatisticOutput(name, mean, variance)
-    outputString = strcat('---------------------------------------\n');
-    outputString = strcat(outputString, name, '\n\n');
-    outputString = strcat(outputString, 'average:\t', num2str(mean), '\n');
-    outputString = strcat(outputString, 'variance:\t', num2str(variance), '\n\n');
+function  printStatistic(fd, name, data)
+    avg = mean(data);
+    variance = var(data);
+    CI = createCI(avg, variance);
     
+    fprintf(fd, '---------------------------------------\n');
+    fprintf(fd, '%s\n', name);
+    fprintf(fd, 'average:\t%f\n', avg);
+    fprintf(fd, 'variance:\t%f\n', variance);
+    fprintf(fd, '95%% confidence interval:\t[%f %f]\n\n', CI(1), CI(2));
+   end
+
+%creates a 95% confidence interval for the input mean and varaince
+function CI = createCI(mean, variance)
+    global numberOfReplications
+
+    t = abs(tinv(0.025, numberOfReplications-1));
+    error = t * sqrt(variance) / sqrt(numberOfReplications);
+    
+    CI = [mean-error mean+error];
 end
+
