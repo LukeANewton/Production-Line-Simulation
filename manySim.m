@@ -16,9 +16,17 @@ global seed;
 global maxSimulationTime;
 global numberOfReplications
 
-numberOfReplications = 5; %the number of times to run the simulation
-seed = 420; %seed to use for simulation
+%---------------------------------------------
+%               Contol Variables
+%---------------------------------------------
+calculateReplicationsRequired = false; %if set true, the numberOfReplications set below is ignored
+numberOfReplications = 10; %the number of times to run the simulation
+seed = 4168; %seed to use for simulation
+%---------------------------------------------
+%            End of Contol Variables
+%---------------------------------------------
 
+%start of main script
 initializeRandomNumberStreams(seed);
 initializeDistributions();
 
@@ -35,27 +43,32 @@ for i = 1:size(oldOutput)
     end
 end
 
-%arrays to collect statistics from each replication
-I1IdleTimes = zeros(1, numberOfReplications);
-I2IdleTimes = zeros(1, numberOfReplications);
-W1IdleTimes = zeros(1, numberOfReplications);
-W2IdleTimes = zeros(1, numberOfReplications);
-W3IdleTimes = zeros(1, numberOfReplications);
-P1Productions = zeros(1, numberOfReplications);
-P2Productions = zeros(1, numberOfReplications);
-P3Productions = zeros(1, numberOfReplications);
-totalProductions = zeros(1, numberOfReplications);
-C1Inspections = zeros(1, numberOfReplications);
-C2Inspections = zeros(1, numberOfReplications);
-C3Inspections = zeros(1, numberOfReplications);
-avgC1W1Sizes = zeros(1, numberOfReplications);
-avgC1W2Sizes = zeros(1, numberOfReplications);
-avgC1W3Sizes = zeros(1, numberOfReplications);
-avgC2W2Sizes = zeros(1, numberOfReplications);
-avgC3W3Sizes = zeros(1, numberOfReplications);
+if ~calculateReplicationsRequired
+    %can only initialize these if we know for sure how many replications
+    I1IdleTimes = zeros(1, numberOfReplications);
+    I2IdleTimes = zeros(1, numberOfReplications);
+    W1IdleTimes = zeros(1, numberOfReplications);
+    W2IdleTimes = zeros(1, numberOfReplications);
+    W3IdleTimes = zeros(1, numberOfReplications);
+    P1Productions = zeros(1, numberOfReplications);
+    P2Productions = zeros(1, numberOfReplications);
+    P3Productions = zeros(1, numberOfReplications);
+    totalProductions = zeros(1, numberOfReplications);
+    C1Inspections = zeros(1, numberOfReplications);
+    C2Inspections = zeros(1, numberOfReplications);
+    C3Inspections = zeros(1, numberOfReplications);
+    avgC1W1Sizes = zeros(1, numberOfReplications);
+    avgC1W2Sizes = zeros(1, numberOfReplications);
+    avgC1W3Sizes = zeros(1, numberOfReplications);
+    avgC2W2Sizes = zeros(1, numberOfReplications);
+    avgC3W3Sizes = zeros(1, numberOfReplications);
+else
+   numberOfReplications = 5; 
+end
 
 %run trials for specified number of times and collect statistics
 for i = 1:numberOfReplications
+    %do one replication
     outputFile = strcat('output/replication', num2str(i) , '.txt');
     Sim(false, outputFile);
     I1IdleTimes(i) = Inspector1IdleTime;
@@ -75,6 +88,15 @@ for i = 1:numberOfReplications
     avgC1W3Sizes(i) = mean(arrayC1W3);
     avgC2W2Sizes(i) = mean(arrayC2W2);
     avgC3W3Sizes(i) = mean(arrayC3W3);
+    
+    %check if we need to do another - are CIs width < 20% of mean?
+    if i >= 5 %we want to do at least 5 replications
+        if isCIWidthOver20Percent(P1Productions)||isCIWidthOver20Percent(P2Productions)||isCIWidthOver20Percent(P3Productions)||isCIWidthOver20Percent(C1Inspections)||isCIWidthOver20Percent(C2Inspections)||isCIWidthOver20Percent(C3Inspections)||isCIWidthOver20Percent(I1IdleTimes)||isCIWidthOver20Percent(I2IdleTimes)||isCIWidthOver20Percent(W1IdleTimes)||isCIWidthOver20Percent(W2IdleTimes)||isCIWidthOver20Percent(W3IdleTimes)||isCIWidthOver20Percent(avgC1W1Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W3Sizes)||isCIWidthOver20Percent(avgC2W2Sizes)||isCIWidthOver20Percent(avgC3W3Sizes)
+            %if any CI too large, do another replication
+            numberOfReplications = numberOfReplications + 1;
+        end
+    end
+    
 end
 
 %print final statistics to file
@@ -107,8 +129,8 @@ function  printStatistic(fd, name, data)
     variance = var(data);
     CI = createCI(avg, variance);
     
-    fprintf(fd, '---------------------------------------\n');
-    fprintf(fd, '%s\n', name);
+    fprintf(fd, '-------------------------------------------------------\n');
+    fprintf(fd, '%s\n\n', name);
     fprintf(fd, 'average:\t%f\n', avg);
     fprintf(fd, 'variance:\t%f\n', variance);
     fprintf(fd, '95%% confidence interval:\t[%f %f]\n\n', CI(1), CI(2));
@@ -122,5 +144,12 @@ function CI = createCI(mean, variance)
     error = t * sqrt(variance) / sqrt(numberOfReplications);
     
     CI = [mean-error mean+error];
+end
+
+%function to determine if the width of a CI is over 20% of the mean value
+%(a specification of the project)
+function doAnotherReplication = isCIWidthOver20Percent(data)
+    CI = createCI(mean(data), var(data));
+    doAnotherReplication = abs(CI(1) - CI(2)) > 0.20*mean(data);
 end
 

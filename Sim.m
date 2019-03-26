@@ -10,14 +10,20 @@
 function Sim(callFromCommandWindow, outputFileName)
     %variables which affect program control flow
     global alternativeStrategy alternativePriority maxSimulationTime seed verbose readInFilesMode;
-    maxSimulationTime = 5000; %change to set the length of time the simulation runs
+    %---------------------------------------------
+    %               Contol Variables
+    %---------------------------------------------
+    maxSimulationTime = 3000; %change to set the length of time the simulation runs
     alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
     alternativePriority = false; %set true to use alternative C1 queue priorities
     verbose = false; %set true to have information on the status of the program displayed in the console window
     if callFromCommandWindow %only set the seed here if doing one replication
-        seed = 420; %change to set the seed used in random number generation
+        seed = 5678; %change to set the seed used in random number generation
     end
     readInFilesMode = true; %set true if we have existing .dat files that we want to read in
+    %---------------------------------------------
+    %            End of Contol Variables
+    %---------------------------------------------
     
     %initialize model
     if verbose
