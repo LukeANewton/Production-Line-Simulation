@@ -20,7 +20,7 @@ global numberOfReplications
 %               Contol Variables
 %---------------------------------------------
 calculateReplicationsRequired = false; %if set true, the numberOfReplications set below is ignored
-numberOfReplications = 10; %the number of times to run the simulation
+numberOfReplications = 1; %the number of times to run the simulation
 seed = 4168; %seed to use for simulation
 %---------------------------------------------
 %            End of Contol Variables

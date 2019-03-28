@@ -13,7 +13,7 @@ function Sim(callFromCommandWindow, outputFileName)
     %---------------------------------------------
     %               Contol Variables
     %---------------------------------------------
-    maxSimulationTime = 3000; %change to set the length of time the simulation runs
+    maxSimulationTime = 2000; %change to set the length of time the simulation runs
     alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
     alternativePriority = false; %set true to use alternative C1 queue priorities
     verbose = false; %set true to have information on the status of the program displayed in the console window
@@ -66,6 +66,10 @@ function Sim(callFromCommandWindow, outputFileName)
     global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
     %arrays for storing the number of items in a queue each iteration
     global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    %arrays to capture times events occur at - used to determine length of
+    %initialization phase.
+    global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes
+    
     if readInFilesMode
         %arrays for storing the read-in distributions from the .dat files
         global arrayReadI1C1 arrayReadI2C2 arrayReadI2C3 arrayReadW1 arrayReadW2 arrayReadW3;
@@ -108,6 +112,7 @@ function Sim(callFromCommandWindow, outputFileName)
     end
     %processed all events - write statistics to file
     updateIdleTimes();
+    plotEventTimes();
     if verbose
         fprintf('\n');
         fprintf('printing results...\n');
@@ -175,6 +180,7 @@ function initializeGlobals()
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
     global idleStartI1 idleEndI1 idleStartI2 idleEndI2;
     global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes
     %simulation time starts at 0
     clock = 0;
     %all queues start empty
@@ -228,6 +234,12 @@ function initializeGlobals()
     arrayC2W2 = [];
     arrayC1W3 = [];
     arrayC3W3 = [];
+    C1ReadyTimes = [];
+    C2ReadyTimes = [];
+    C3ReadyTimes = [];
+    P1BuiltTimes = [];
+    P2BuiltTimes = [];
+    P3BuiltTimes = [];
 end
 
 %after processing events we need to update the total idle times of each
@@ -263,6 +275,7 @@ end
 function processEvent(e)
     global clock verbose timeToEndSim;
     global queueC1W1 queueC1W2 queueC1W3 queueC2W2 queueC3W3;
+    global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes
     
     if(clock > e.time) %each program moves forward in time only
         error('next event occurs before current simulation time.');
@@ -281,16 +294,22 @@ function processEvent(e)
         fprintf('processing %s event\n', e.type);
     end
     if e.type == EventType.C1Ready
+        C1ReadyTimes = [C1ReadyTimes clock];
         component1Ready();
     elseif e.type == EventType.C2Ready
+        C2ReadyTimes = [C2ReadyTimes clock];
         component2Ready();
     elseif e.type == EventType.C3Ready
+        C3ReadyTimes = [C3ReadyTimes clock];
         component3Ready();
     elseif e.type == EventType.P1Built
+        P1BuiltTimes = [P1BuiltTimes clock];
         productOneBuilt();
     elseif e.type == EventType.P2Built
+        P2BuiltTimes = [P2BuiltTimes clock];
         productTwoBuilt();
     elseif e.type == EventType.P3Built
+        P3BuiltTimes = [P3BuiltTimes clock];
         productThreeBuilt();
     elseif e.type == EventType.endOfSimulation
         timeToEndSim = true;
@@ -303,6 +322,25 @@ function checkBoundries(queue, name)
     if(queue < 0) || (queue > 2)
         error('queue %s is out of acceptable range [0, 2]', name);
     end
+end
+
+%plot the event times to visualize where we enter steady state
+function plotEventTimes()
+    global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes;
+    global maxSimulationTime
+    
+    %TODO: do this for each type of event
+    
+    %count the number of events in each interval
+    batchTime = 20;
+    C1Batches = zeros(1, ceil(maxSimulationTime/batchTime));
+    for i = 1:length(C1ReadyTimes)
+        index = ceil(C1ReadyTimes(i)/batchTime);
+        C1Batches(index) = C1Batches(index) + 1;
+    end  
+   plot(batchTime:batchTime:maxSimulationTime, C1Batches); 
+   xlabel('Simulation Time');
+   ylabel('# C1Ready events');
 end
 
 %reads in and stores the values from a .dat file into an array to be used 
