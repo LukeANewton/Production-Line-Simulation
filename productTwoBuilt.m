@@ -7,6 +7,7 @@ function productTwoBuilt()
     global workstationTwoIdle idleStartW2;
     global Inspector1IdleTime idleEndI1 idleStartI1;
     global Inspector2IdleTime idleEndI2 idleStartI2;
+    global readInFilesMode arrayReadW2;
     
     P2Produced = P2Produced + 1;
     P2InProduction = false;
@@ -32,9 +33,14 @@ function productTwoBuilt()
         unblockInspector2Check(2);
         % Generate next P2Build Event and add it to FEL
         P2InProduction = true;
-        %get the inspection time from entering a random numer [0, 1] into
-        %inverse cdf
-        timeToAssemble = W2Dist.icdf(rand(rngW2));
+        if readInFilesMode == true
+            %get the assembly time from the read in values
+            timeToAssemble = getNextReadInValue(arrayReadW2);
+        else
+            %get the assembly time from entering a random numer [0, 1] into
+            %inverse cdf
+            timeToAssemble = W2Dist.icdf(rand(rngW2));
+        end        
         eP2 = Event(clock + timeToAssemble, EventType.P2Built);
         FEL = FEL.addEvent(eP2);
         if verbose

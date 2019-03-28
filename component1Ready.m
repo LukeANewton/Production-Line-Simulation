@@ -14,6 +14,7 @@ function component1Ready()
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
     global idleStartI1;
+    global readInFilesMode arrayReadI1C1 arrayReadW1 arrayReadW2 arrayReadW3;
     
     if isQueueFull(queueC1W1) && isQueueFull(queueC1W2) && isQueueFull(queueC1W3)
         if verbose
@@ -91,9 +92,14 @@ function component1Ready()
             Workstation1IdleTime = Workstation1IdleTime + difference;
             
             %generate P1BuiltEvent
-            %get the inspection time from entering a random numer [0, 1] into
-            %inverse cdf
-            timeToAssemble = W1Dist.icdf(rand(rngW1));
+            if readInFilesMode == true
+                %get the assembly time from the read in values
+                timeToAssemble = getNextReadInValue(arrayReadW1);
+            else
+                %get the assembly time from entering a random numer [0, 1] into
+                %inverse cdf
+                timeToAssemble = W1Dist.icdf(rand(rngW1));
+            end
             eP1 = Event(clock + timeToAssemble, EventType.P1Built);
             FEL = FEL.addEvent(eP1);
         end
@@ -112,7 +118,11 @@ function component1Ready()
             Workstation2IdleTime = Workstation2IdleTime + difference;
             unblockInspector2Check(2);
             %generate P2BuiltEvent
-            timeToAssemble = W2Dist.icdf(rand(rngW2));
+            if readInFilesMode == true
+                timeToAssemble = getNextReadInValue(arrayReadW2);
+            else 
+                timeToAssemble = W2Dist.icdf(rand(rngW2));
+            end
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
             FEL = FEL.addEvent(eP2);
         end
@@ -131,7 +141,11 @@ function component1Ready()
             Workstation3IdleTime = Workstation3IdleTime + difference;
             unblockInspector2Check(3);
             %generate P3BuiltEvent
-            timeToAssemble = W3Dist.icdf(rand(rngW3));
+            if readInFilesMode == true
+                timeToAssemble = getNextReadInValue(arrayReadW3);
+            else
+                timeToAssemble = W3Dist.icdf(rand(rngW3));
+            end
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
             FEL = FEL.addEvent(eP3);
         end 
