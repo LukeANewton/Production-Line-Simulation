@@ -36,7 +36,7 @@ function productThreeBuilt()
         P3InProduction = false;
         if readInFilesMode == true
             %get the assembly time from the read in values
-            timeToAssemble = getNextReadInValue(arrayReadW3);
+            [timeToAssemble,arrayReadW3] = getNextReadInValue(arrayReadW3);
         else
             %get the assembly time from entering a random numer [0, 1] into
             %inverse cdf

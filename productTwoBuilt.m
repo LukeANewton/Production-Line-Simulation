@@ -35,7 +35,7 @@ function productTwoBuilt()
         P2InProduction = true;
         if readInFilesMode == true
             %get the assembly time from the read in values
-            timeToAssemble = getNextReadInValue(arrayReadW2);
+            [timeToAssemble,arrayReadW2] = getNextReadInValue(arrayReadW2);
         else
             %get the assembly time from entering a random numer [0, 1] into
             %inverse cdf

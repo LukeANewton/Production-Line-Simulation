@@ -8,6 +8,7 @@ function component3Ready()
     global W3Dist rngW3 clock;
     global workstationThreeIdle Workstation3IdleTime idleStartW3 idleEndW3;
     global C3Inspected;
+    global readInFilesMode arrayReadW3;
     
     if isQueueFull(queueC3W3)%cannot place component in queue if queue is full
         blockInspector2();
@@ -34,9 +35,14 @@ function component3Ready()
             Workstation3IdleTime = Workstation3IdleTime + difference;
             
             %generate P3BuiltEvent
-            %get the inspection time from entering a random numer [0, 1] into
-            %inverse cdf
-            timeToAssemble = W3Dist.icdf(rand(rngW3));
+            if readInFilesMode == true
+                %get the assembly time from the read in values
+                [timeToAssemble,arrayReadW3] = getNextReadInValue(arrayReadW3);
+            else
+                %get the assembly time from entering a random numer [0, 1] into
+                %inverse cdf
+                timeToAssemble = W3Dist.icdf(rand(rngW3));
+            end
             eP3 = Event(clock + timeToAssemble, EventType.P3Built);
             FEL = FEL.addEvent(eP3);
         end  

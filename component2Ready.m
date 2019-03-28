@@ -8,6 +8,7 @@ function component2Ready()
     global W2Dist rngW2 clock;
     global workstationTwoIdle Workstation2IdleTime idleStartW2 idleEndW2;
     global C2Inspected;
+    global readInFilesMode arrayReadW2;
     
     if isQueueFull(queueC2W2)%cannot place component in queue if queue is full
         blockInspector2();
@@ -34,9 +35,14 @@ function component2Ready()
             Workstation2IdleTime = Workstation2IdleTime + difference;
             
             %generate P2BuiltEvent
-            %get the inspection time from entering a random numer [0, 1] into
-            %inverse cdf
-            timeToAssemble = W2Dist.icdf(rand(rngW2));
+            if readInFilesMode == true
+                %get the assembly time from the read in values
+                [timeToAssemble,arrayReadW2] = getNextReadInValue(arrayReadW2);
+            else
+                %get the assembly time from entering a random numer [0, 1] into
+                %inverse cdf
+                timeToAssemble = W2Dist.icdf(rand(rngW2));
+            end
             eP2 = Event(clock + timeToAssemble, EventType.P2Built);
             FEL = FEL.addEvent(eP2); 
         end  
