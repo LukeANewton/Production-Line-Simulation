@@ -13,12 +13,12 @@ function Sim(callFromCommandWindow, outputFileName)
     %---------------------------------------------
     %               Contol Variables
     %---------------------------------------------
-    maxSimulationTime = 2000; %change to set the length of time the simulation runs
-    alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
+    maxSimulationTime = 1200; %change to set the length of time the simulation runs
+    alternativeStrategy = true; %set true to use alternative round-robin C1 scheduling
     alternativePriority = false; %set true to use alternative C1 queue priorities
     verbose = false; %set true to have information on the status of the program displayed in the console window
     if callFromCommandWindow %only set the seed here if doing one replication
-        seed = 5678; %change to set the seed used in random number generation
+        seed = 2; %change to set the seed used in random number generation
     end
     readInFilesMode = true; %set true if we have existing .dat files that we want to read in
     %---------------------------------------------
@@ -112,7 +112,7 @@ function Sim(callFromCommandWindow, outputFileName)
     end
     %processed all events - write statistics to file
     updateIdleTimes();
-    plotEventTimes();
+    plotEventTimes(30);
     if verbose
         fprintf('\n');
         fprintf('printing results...\n');
@@ -125,10 +125,10 @@ function Sim(callFromCommandWindow, outputFileName)
     fprintf(fd, 'Total products produced: %d\n\n', P1Produced + P2Produced + P3Produced);
     fprintf(fd, 'Total number of component 1 used in production: %d\n', P1Produced + P2Produced + P3Produced);
     fprintf(fd, 'Total number of component 2 used in production: %d\n', P2Produced);
-    fprintf(fd, 'Total number of component 3 used in production: %d\n\n', P2Produced);
+    fprintf(fd, 'Total number of component 3 used in production: %d\n\n', P3Produced);
     fprintf(fd, 'Total number of component 1 used in production or in queues at end of simulation: %d\n', P1Produced + P2Produced + P3Produced + queueC1W1 + queueC1W2 + queueC1W3 + P1InProduction);
     fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n', P2Produced + queueC2W2 + P2InProduction);
-    fprintf(fd, 'Total number of component 2 used in production or in queues at end of simulation: %d\n\n', P3Produced + queueC3W3 + P3InProduction);
+    fprintf(fd, 'Total number of component 3 used in production or in queues at end of simulation: %d\n\n', P3Produced + queueC3W3 + P3InProduction);
     fprintf(fd, 'Number of component 1 inspected: %d\n', C1Inspected);
     fprintf(fd, 'Number of component 2 inspected: %d\n', C2Inspected);
     fprintf(fd, 'Number of component 3 inspected: %d\n\n', C3Inspected);
@@ -325,22 +325,55 @@ function checkBoundries(queue, name)
 end
 
 %plot the event times to visualize where we enter steady state
-function plotEventTimes()
+function plotEventTimes(batchTime)
     global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes;
-    global maxSimulationTime
     
-    %TODO: do this for each type of event
+    plotTitle = strcat('Number of C1Ready Events Every ', num2str(batchTime), ' minutes');
+    batchAndPlot(C1ReadyTimes, batchTime, plotTitle, 'Number of C1Ready events', 'C1ReadyFrequency');
+    plotTitle = strcat('Number of C1Ready Events Every ', num2str(batchTime), ' minutes');
+    batchAndPlot(C2ReadyTimes, batchTime, plotTitle, 'Number of C2Ready events', 'C2ReadyFrequency');
+    plotTitle = strcat('Number of C1Ready Events Every ', num2str(batchTime), ' minutes');
+    batchAndPlot(C3ReadyTimes, batchTime, plotTitle, 'Number of C3Ready events', 'C3ReadyFrequency');
+    plotTitle = strcat('Number of P1Built Events Every ', num2str(batchTime), ' minutes');
+    batchAndPlot(P1BuiltTimes, batchTime, plotTitle, 'Number of P1Built events', 'P1BuiltFrequency');
+    plotTitle = strcat('Number of P2Built Events Every ', num2str(batchTime), ' minutes');
+    batchAndPlot(P2BuiltTimes, batchTime, plotTitle, 'Number of P2Built events', 'P2BuiltFrequency');
+    plotTitle = strcat('Number of P3Built Events Every ', num2str(batchTime), ' minutes');
+    batchAndPlot(P3BuiltTimes, batchTime, plotTitle, 'Number of P3Built events', 'P3BuiltFrequency');
+    
+    
+    
+end
+
+function batchAndPlot(data, interval, plotTitle, xtitle, filename)
+    global maxSimulationTime
+
+    %create directory for figure
+    if ~exist('sim plots', 'dir')
+        mkdir('sim plots');
+    end
     
     %count the number of events in each interval
-    batchTime = 20;
-    C1Batches = zeros(1, ceil(maxSimulationTime/batchTime));
-    for i = 1:length(C1ReadyTimes)
-        index = ceil(C1ReadyTimes(i)/batchTime);
-        C1Batches(index) = C1Batches(index) + 1;
-    end  
-   plot(batchTime:batchTime:maxSimulationTime, C1Batches); 
-   xlabel('Simulation Time');
-   ylabel('# C1Ready events');
+    batches = zeros(1, ceil(maxSimulationTime/interval));
+    for i = 1:length(data)
+        index = ceil(data(i)/interval);
+        batches(index) = batches(index) + 1;
+    end
+    %plot batches
+    fig = figure('visible', 'off');
+    plot(interval:interval:maxSimulationTime, batches);
+    xlabel('Simulation Time');
+    ylabel(xtitle);
+    title(plotTitle);
+    pbaspect([4 1 1]);
+    print(fig, '-djpeg', strcat('sim plots/', filename));
+    
+    
+    %plot 1st difference of batches
+    fig = figure('visible', 'off');
+    plot(2*interval:interval:maxSimulationTime, (diff(batches)));
+    print(fig, '-djpeg', strcat('sim plots/1stdiff', filename));
+    
 end
 
 %reads in and stores the values from a .dat file into an array to be used 
