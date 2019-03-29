@@ -13,12 +13,12 @@ function Sim(callFromCommandWindow, outputFileName)
     %---------------------------------------------
     %               Contol Variables
     %---------------------------------------------
-    maxSimulationTime = 1200; %change to set the length of time the simulation runs
-    alternativeStrategy = true; %set true to use alternative round-robin C1 scheduling
+    maxSimulationTime = 1000; %change to set the length of time the simulation runs
+    alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
     alternativePriority = false; %set true to use alternative C1 queue priorities
     verbose = false; %set true to have information on the status of the program displayed in the console window
     if callFromCommandWindow %only set the seed here if doing one replication
-        seed = 2; %change to set the seed used in random number generation
+        seed = 5437; %change to set the seed used in random number generation
     end
     readInFilesMode = true; %set true if we have existing .dat files that we want to read in
     %---------------------------------------------
@@ -65,7 +65,7 @@ function Sim(callFromCommandWindow, outputFileName)
     %for deciding to inspect C2 or C3 next
     global rngC1 rngC2 rngC3 rngW1 rngW2 rngW3 rand0to1
     %arrays for storing the number of items in a queue each iteration
-    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3 timesQueueSizeCaptured;
     %arrays to capture times events occur at - used to determine length of
     %initialization phase.
     global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes
@@ -109,10 +109,11 @@ function Sim(callFromCommandWindow, outputFileName)
         arrayC2W2 = [arrayC2W2 queueC2W2];
         arrayC1W3 = [arrayC1W3 queueC1W3];
         arrayC3W3 = [arrayC3W3 queueC3W3];
+        timesQueueSizeCaptured = [timesQueueSizeCaptured clock];
     end
     %processed all events - write statistics to file
     updateIdleTimes();
-    plotEventTimes(30);
+    plotEventTimes(5);
     if verbose
         fprintf('\n');
         fprintf('printing results...\n');
@@ -179,7 +180,7 @@ function initializeGlobals()
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3;
     global idleStartI1 idleEndI1 idleStartI2 idleEndI2;
-    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
+    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3 timesQueueSizeCaptured;
     global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes
     %simulation time starts at 0
     clock = 0;
@@ -240,6 +241,7 @@ function initializeGlobals()
     P1BuiltTimes = [];
     P2BuiltTimes = [];
     P3BuiltTimes = [];
+    timesQueueSizeCaptured = [];
 end
 
 %after processing events we need to update the total idle times of each
@@ -327,12 +329,13 @@ end
 %plot the event times to visualize where we enter steady state
 function plotEventTimes(batchTime)
     global C1ReadyTimes C2ReadyTimes C3ReadyTimes P1BuiltTimes P2BuiltTimes P3BuiltTimes;
+    global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
     
     plotTitle = strcat('Number of C1Ready Events Every ', num2str(batchTime), ' minutes');
     batchAndPlot(C1ReadyTimes, batchTime, plotTitle, 'Number of C1Ready events', 'C1ReadyFrequency');
-    plotTitle = strcat('Number of C1Ready Events Every ', num2str(batchTime), ' minutes');
+    plotTitle = strcat('Number of C2Ready Events Every ', num2str(batchTime), ' minutes');
     batchAndPlot(C2ReadyTimes, batchTime, plotTitle, 'Number of C2Ready events', 'C2ReadyFrequency');
-    plotTitle = strcat('Number of C1Ready Events Every ', num2str(batchTime), ' minutes');
+    plotTitle = strcat('Number of C3Ready Events Every ', num2str(batchTime), ' minutes');
     batchAndPlot(C3ReadyTimes, batchTime, plotTitle, 'Number of C3Ready events', 'C3ReadyFrequency');
     plotTitle = strcat('Number of P1Built Events Every ', num2str(batchTime), ' minutes');
     batchAndPlot(P1BuiltTimes, batchTime, plotTitle, 'Number of P1Built events', 'P1BuiltFrequency');
@@ -340,12 +343,43 @@ function plotEventTimes(batchTime)
     batchAndPlot(P2BuiltTimes, batchTime, plotTitle, 'Number of P2Built events', 'P2BuiltFrequency');
     plotTitle = strcat('Number of P3Built Events Every ', num2str(batchTime), ' minutes');
     batchAndPlot(P3BuiltTimes, batchTime, plotTitle, 'Number of P3Built events', 'P3BuiltFrequency');
-    
-    
-    
+       
+    title = 'Size of worstation 1 component 1 queue';
+    plotQueueSize(arrayC1W1, title, title, 'C1W1size'); 
+    title = 'Size of worstation 2 component 1 queue';
+    plotQueueSize(arrayC1W2, title, title, 'C1W2size');
+    title = 'Size of worstation 3 component 1 queue';
+    plotQueueSize(arrayC1W3, title, title, 'C1W3size');
+    title = 'Size of worstation 2 component 2 queue';
+    plotQueueSize(arrayC2W2, title, title, 'C2W2size');
+    title = 'Size of worstation 3 component 3 queue';
+    plotQueueSize(arrayC3W3, title, title, 'C3W3size');
 end
 
-function batchAndPlot(data, interval, plotTitle, xtitle, filename)
+function plotQueueSize(data, plotTitle, yTitle, filename)
+    global timesQueueSizeCaptured;
+
+    fig = figure('visible', 'off');
+    plot(timesQueueSizeCaptured, data);
+    xlabel('Simulation Time');
+    ylabel(yTitle);
+    title(plotTitle);
+    pbaspect([4 1 1]);
+    refline(0, mean(data));
+    print(fig, '-djpeg', strcat('sim plots/', filename));
+    
+    %plot moving averages (average every 3 points together)
+    averages = zeros(1, ceil(length(data) / 3));
+    for i = 1:length(data)
+         averages(ceil(i / 3)) = averages(mod(i, 3) + 1) + data(i);
+     end
+     averages = averages / 3;
+     fig = figure('visible', 'off');
+     plot(timesQueueSizeCaptured(3:3:end), averages(1:end));
+     print(fig, '-djpeg', strcat('sim plots/average', filename));
+end
+
+function batchAndPlot(data, interval, plotTitle, ytitle, filename)
     global maxSimulationTime
 
     %create directory for figure
@@ -363,17 +397,23 @@ function batchAndPlot(data, interval, plotTitle, xtitle, filename)
     fig = figure('visible', 'off');
     plot(interval:interval:maxSimulationTime, batches);
     xlabel('Simulation Time');
-    ylabel(xtitle);
+    ylabel(ytitle);
     title(plotTitle);
     pbaspect([4 1 1]);
     print(fig, '-djpeg', strcat('sim plots/', filename));
     
-    
-    %plot 1st difference of batches
-    fig = figure('visible', 'off');
-    plot(2*interval:interval:maxSimulationTime, (diff(batches)));
-    print(fig, '-djpeg', strcat('sim plots/1stdiff', filename));
-    
+    %plot moving averages (average every 3 points together)
+     averages = zeros(1, ceil(length(batches) / 3));
+     for i = 1:length(batches)
+         averages(ceil(i / 3)) = averages(mod(i, 3) + 1) + batches(i);
+     end
+     averages = averages / 3;
+     fig = figure('visible', 'off');
+     plot(3*interval:3*interval:3*interval*length(averages), averages);
+    xlabel('Simulation Time');
+    ylabel(ytitle);
+    title(strcat('average', plotTitle));
+     print(fig, '-djpeg', strcat('sim plots/average', filename));
 end
 
 %reads in and stores the values from a .dat file into an array to be used 
