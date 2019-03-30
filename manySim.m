@@ -83,8 +83,8 @@ if ~calculateReplicationsRequired
     avgC2W2Sizes = zeros(1, numberOfReplications);
     avgC3W3Sizes = zeros(1, numberOfReplications);
 else
-   %when calculating how many replications we need, always do at least 5
-   numberOfReplications = 5; 
+   %when calculating how many replications we need, always do at least 10
+   numberOfReplications = 10; 
 end
 
 %run trials for specified number of times and collect statistics
@@ -111,7 +111,7 @@ for i = 1:numberOfReplications
     avgC3W3Sizes(i) = mean(arrayC3W3);
     
     %check if we need to do another - are CIs width < 20% of mean?
-    if i >= 5 %we want to do at least 5 replications
+    if i >= 10 %we want to do at least 10 replications
         if isCIWidthOver20Percent(P1Productions)||isCIWidthOver20Percent(P2Productions)||isCIWidthOver20Percent(P3Productions)||isCIWidthOver20Percent(C1Inspections)||isCIWidthOver20Percent(C2Inspections)||isCIWidthOver20Percent(C3Inspections)||isCIWidthOver20Percent(I1IdleTimes)||isCIWidthOver20Percent(I2IdleTimes)||isCIWidthOver20Percent(W1IdleTimes)||isCIWidthOver20Percent(W2IdleTimes)||isCIWidthOver20Percent(W3IdleTimes)||isCIWidthOver20Percent(avgC1W1Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W3Sizes)||isCIWidthOver20Percent(avgC2W2Sizes)||isCIWidthOver20Percent(avgC3W3Sizes)
             %if any CI too large, do another replication
             numberOfReplications = numberOfReplications + 1;
