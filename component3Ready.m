@@ -6,8 +6,9 @@ function component3Ready()
     global queueC1W3 queueC3W3 queueC2W2 FEL;
     global P3InProduction verbose;
     global W3Dist rngW3 clock;
-    global workstationThreeIdle Workstation3IdleTime idleStartW3 idleEndW3;
+    global workstationThreeIdle;
     global C3Inspected;
+    global W3IdleEndTimes;
     global readInFilesMode arrayReadW3;
     
     if isQueueFull(queueC3W3)%cannot place component in queue if queue is full
@@ -29,10 +30,10 @@ function component3Ready()
             end
             
             %clear workstation idle bit and increment workstation idle time
-            workstationThreeIdle = false;
-            idleEndW3 = clock;            
-            difference = idleEndW3 - idleStartW3;
-            Workstation3IdleTime = Workstation3IdleTime + difference;
+            if workstationThreeIdle
+                workstationThreeIdle = false;
+                W3IdleEndTimes = [W3IdleEndTimes clock];
+            end
             
             %generate P3BuiltEvent
             if readInFilesMode == true

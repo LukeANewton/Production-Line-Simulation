@@ -3,8 +3,8 @@ function productOneBuilt()
     global queueC1W1 verbose; 
     global inspectorOneBlocked;
     global W1Dist rngW1 FEL clock P1Produced P1InProduction;
-    global workstationOneIdle idleStartW1; 
-    global idleStartI1 idleEndI1 Inspector1IdleTime;
+    global workstationOneIdle; 
+    global W1IdleStartTimes I1IdleEndTimes;
     global readInFilesMode arrayReadW1;
     
     P1Produced = P1Produced + 1;
@@ -13,7 +13,7 @@ function productOneBuilt()
     if isQueueEmpty(queueC1W1)
        workstationOneIdle = true;
        % Read the CURRENT time for when the workstation starts being idle
-       idleStartW1 = clock;
+       W1IdleStartTimes = [W1IdleStartTimes clock];
     else
         queueC1W1 = queueC1W1 - 1;
         if inspectorOneBlocked == true
@@ -22,9 +22,7 @@ function productOneBuilt()
             end
             
             inspectorOneBlocked = false;
-            idleEndI1 = clock;
-            difference = idleEndI1 - idleStartI1;
-            Inspector1IdleTime = Inspector1IdleTime + difference;
+            I1IdleEndTimes = [I1IdleEndTimes clock];
             
             % Generates C1Ready event AT CURRENT TIME
             % This causes the inspector to try to place it's component again

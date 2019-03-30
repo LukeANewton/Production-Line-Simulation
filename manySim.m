@@ -20,8 +20,8 @@ global numberOfReplications
 %               Contol Variables
 %---------------------------------------------
 calculateReplicationsRequired = false; %if set true, the numberOfReplications set below is ignored
-numberOfReplications = 10; %the number of times to run the simulation
-seed = 4168; %seed to use for simulation
+numberOfReplications = 1; %the number of times to run the simulation
+seed = 5437; %seed to use for simulation
 %---------------------------------------------
 %            End of Contol Variables
 %---------------------------------------------
@@ -63,6 +63,7 @@ if ~calculateReplicationsRequired
     avgC2W2Sizes = zeros(1, numberOfReplications);
     avgC3W3Sizes = zeros(1, numberOfReplications);
 else
+   %when calculating how many replicatiopns we need, always do at least 5
    numberOfReplications = 5; 
 end
 

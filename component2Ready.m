@@ -6,10 +6,11 @@ function component2Ready()
     global queueC1W2 queueC2W2 queueC3W3 FEL;
     global P2InProduction verbose;
     global W2Dist rngW2 clock;
-    global workstationTwoIdle Workstation2IdleTime idleStartW2 idleEndW2;
+    global workstationTwoIdle;
     global C2Inspected;
+    global W2IdleEndTimes;
     global readInFilesMode arrayReadW2;
-    
+ 
     if isQueueFull(queueC2W2)%cannot place component in queue if queue is full
         blockInspector2();
     else %there is space to place the component
@@ -29,10 +30,10 @@ function component2Ready()
             end
             
             %clear workstation idle bit and increment workstation idle time
-            workstationTwoIdle = false;
-            idleEndW2 = clock;            
-            difference = idleEndW2 - idleStartW2;
-            Workstation2IdleTime = Workstation2IdleTime + difference;
+            if workstationTwoIdle
+                workstationTwoIdle = false;
+                W2IdleEndTimes = [W2IdleEndTimes clock];
+            end
             
             %generate P2BuiltEvent
             if readInFilesMode == true

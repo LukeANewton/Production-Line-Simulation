@@ -3,8 +3,8 @@ function productThreeBuilt()
     global queueC1W3 queueC3W3 verbose;
     global inspectorOneBlocked;
     global W3Dist rngW3 FEL clock P3Produced P3InProduction;
-    global workstationThreeIdle idleStartW3;
-    global Inspector1IdleTime idleEndI1 idleStartI1;
+    global workstationThreeIdle;
+    global W3IdleStartTimes I1IdleEndTimes;
     global readInFilesMode arrayReadW3;
     
     P3Produced = P3Produced + 1;
@@ -12,8 +12,8 @@ function productThreeBuilt()
     
     if isQueueEmpty(queueC1W3) || isQueueEmpty(queueC3W3)
        workstationThreeIdle = true;
-       % Read the CURRENT time for when the workstation starts being idle
-       idleStartW3 = clock; 
+       % Read the CURRENT time for when the workstation starts being idle 
+       W3IdleStartTimes = [W3IdleStartTimes clock];
     else 
         queueC1W3 = queueC1W3 - 1;
         queueC3W3 = queueC3W3 - 1;
@@ -22,9 +22,7 @@ function productThreeBuilt()
                 fprintf('inspector 2 unblocked\n');
             end
             inspectorOneBlocked = false;
-            idleEndI1 = clock;
-            difference = idleEndI1 - idleStartI1;
-            Inspector1IdleTime = Inspector1IdleTime + difference;
+            I1IdleEndTimes = [I1IdleEndTimes clock];
             
             % Generates C1Ready event AT CURRENT TIME
             % This causes the inspector to try to place it's component again
