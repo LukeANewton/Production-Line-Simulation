@@ -25,6 +25,9 @@ function component1Ready()
         %there is space for a component 1 somewhere, we must figure out
         %which queue to place the component in
         componentPlaced = false;
+        %---------------------------------------------
+        %         Start of an Alternative Design
+        %---------------------------------------------
         if alternativeStrategy %use alternative round-robin approach
             if lastQueueC1PlacedIn == 0 || lastQueueC1PlacedIn == 3
                 componentPlaced = attemptC1W1Placement(componentPlaced);
@@ -39,6 +42,9 @@ function component1Ready()
                 componentPlaced = attemptC1W1Placement(componentPlaced);
                 attemptC1W2Placement(componentPlaced);
             end
+        %---------------------------------------------
+        %         End of an Alternative Design
+        %---------------------------------------------
         else %use original place in smallest queue approach
             if queueC1W1 < queueC1W2 && queueC1W1 < queueC1W3 %C1 queue is smallest
                 attemptC1W1Placement(componentPlaced);
@@ -47,6 +53,9 @@ function component1Ready()
             elseif queueC1W3 < queueC1W2 && queueC1W3 < queueC1W1 %C3 queue is smallest
                 attemptC1W3Placement(componentPlaced);
             else %two queue have the same size
+                %---------------------------------------------
+                %         Start of an Alternative Design
+                %---------------------------------------------
                 if alternativePriority %use alternative priority of workstations 3, then 2, then 1
                     if queueC1W1 == queueC1W2 && queueC1W1 == queueC1W3 %all queues the same size
                         attemptC1W3Placement(componentPlaced);
@@ -57,6 +66,9 @@ function component1Ready()
                     elseif queueC1W3 == queueC1W2 %workstation 3 and 2 have same queue length
                         attemptC1W3Placement(componentPlaced);
                     end
+                %---------------------------------------------
+                %         End of an Alternative Design
+                %---------------------------------------------
                 else %use original priority of workstations 1, then 2, then 3
                     if queueC1W1 == queueC1W2 && queueC1W1 == queueC1W3 %all queues the same size
                         attemptC1W1Placement(componentPlaced);
