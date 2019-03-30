@@ -13,7 +13,7 @@ function component1Ready()
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
     global W1IdleEndTimes W2IdleEndTimes W3IdleEndTimes I1IdleStartTimes;
     global readInFilesMode arrayReadW1 arrayReadW2 arrayReadW3;
-
+    
     if isQueueFull(queueC1W1) && isQueueFull(queueC1W2) && isQueueFull(queueC1W3)
         if verbose
             fprintf('inspector 1 blocked\n');

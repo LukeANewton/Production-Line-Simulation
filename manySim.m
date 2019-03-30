@@ -20,7 +20,7 @@ global numberOfReplications
 %               Contol Variables
 %---------------------------------------------
 calculateReplicationsRequired = false; %if set true, the numberOfReplications set below is ignored
-numberOfReplications = 1; %the number of times to run the simulation
+numberOfReplications = 10; %the number of times to run the simulation
 seed = 5437; %seed to use for simulation
 %---------------------------------------------
 %            End of Contol Variables
@@ -63,7 +63,7 @@ if ~calculateReplicationsRequired
     avgC2W2Sizes = zeros(1, numberOfReplications);
     avgC3W3Sizes = zeros(1, numberOfReplications);
 else
-   %when calculating how many replicatiopns we need, always do at least 5
+   %when calculating how many replications we need, always do at least 5
    numberOfReplications = 5; 
 end
 
@@ -153,4 +153,3 @@ function doAnotherReplication = isCIWidthOver20Percent(data)
     CI = createCI(mean(data), var(data));
     doAnotherReplication = abs(CI(1) - CI(2)) > 0.20*mean(data);
 end
-

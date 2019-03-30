@@ -10,7 +10,7 @@ function component2Ready()
     global C2Inspected;
     global W2IdleEndTimes;
     global readInFilesMode arrayReadW2;
- 
+    
     if isQueueFull(queueC2W2)%cannot place component in queue if queue is full
         blockInspector2();
     else %there is space to place the component

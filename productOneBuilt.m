@@ -29,7 +29,7 @@ function productOneBuilt()
             eC1 = Event(clock, EventType.C1Ready);
             FEL = FEL.addEvent(eC1);
         end
-        % Generate next P1Build Event and add it to FEL
+         % Generate next P1Build Event and add it to FEL
         P1InProduction = true;        
         if readInFilesMode == true            
             %get the assembly time from the read in values
@@ -40,9 +40,9 @@ function productOneBuilt()
             timeToAssemble = W1Dist.icdf(rand(rngW1));
         end
         eP1 = Event(clock + timeToAssemble, EventType.P1Built);
-        FEL = FEL.addEvent(eP1);      
-        if verbose
-            fprintf('assembling another P1\n');
-        end
+        FEL = FEL.addEvent(eP1);  
+         if verbose
+                fprintf('assembling another P1\n');
+         end
     end  
 end

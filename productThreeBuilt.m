@@ -29,9 +29,9 @@ function productThreeBuilt()
             eC1 = Event(clock, EventType.C1Ready);
             FEL = FEL.addEvent(eC1);
         end
-        unblockInspector2Check(3);
-        % Generate next P3Build Event and add it to FEL
-        P3InProduction = false;
+         unblockInspector2Check(3);
+        % Generate next P1Build Event and add it to FEL
+        P3InProduction = true;        
         if readInFilesMode == true
             %get the assembly time from the read in values
             [timeToAssemble,arrayReadW3] = getNextReadInValue(arrayReadW3);
@@ -41,7 +41,7 @@ function productThreeBuilt()
             timeToAssemble = W3Dist.icdf(rand(rngW3));
         end
         eP3 = Event(clock + timeToAssemble, EventType.P3Built);
-        FEL = FEL.addEvent(eP3);
+        FEL = FEL.addEvent(eP3); 
         if verbose
            fprintf('assembling another P3\n');
         end

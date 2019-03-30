@@ -35,7 +35,7 @@ function component3Ready()
                 W3IdleEndTimes = [W3IdleEndTimes clock];
             end
             
-            %generate P3BuiltEvent
+             %generate P3BuiltEvent
             if readInFilesMode == true
                 %get the assembly time from the read in values
                 [timeToAssemble,arrayReadW3] = getNextReadInValue(arrayReadW3);

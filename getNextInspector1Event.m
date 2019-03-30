@@ -16,4 +16,3 @@ function e = getNextInspector1Event()
         fprintf('inspector 1 inspecting component 1\n');
     end
 end
-

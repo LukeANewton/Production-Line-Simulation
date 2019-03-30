@@ -23,7 +23,7 @@ function Sim(callFromCommandWindow, outputFileName)
     %---------------------------------------------
     %               Contol Variables
     %---------------------------------------------
-    maxSimulationTime = 1000; %change to set the length of time the simulation runs
+    maxSimulationTime = 3000; %change to set the length of time the simulation runs
     alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
     alternativePriority = false; %set true to use alternative C1 queue priorities
     verbose = false; %set true to have information on the status of the program displayed in the console window
