@@ -1,4 +1,13 @@
-%script to run many replications of the simulation and gather results
+%Script to run many replications of the simulation and gather results. The
+%Script creates a folder called 'output' and stores a txt for the output of
+%each replication, as well as a file called 'finalresults.txt' which
+%contains the estimated values and 95% confidence intervals from the
+%combined replications output data. 
+%
+%If you want to run a single replication, you can set numberOfReplications 
+%to 1, but your finalresults.txt will show confidence intervals as NaN 
+%(becuase you have 0 variance, resulting in a divide by 0). You can also 
+%run a single simulation by directly running Sim.m
 clear; clc;
 
 %number values representing how long each inspector/workstation has spent idle
@@ -19,9 +28,20 @@ global numberOfReplications
 %---------------------------------------------
 %               Contol Variables
 %---------------------------------------------
-calculateReplicationsRequired = false; %if set true, the numberOfReplications set below is ignored
-numberOfReplications = 10; %the number of times to run the simulation
-seed = 5437; %seed to use for simulation
+%Set calculateReplicationsRequired to true to have the program determine
+%how many replications are needed to get confidence intervals for
+%statistics of a width within 20% of the estimated value. If set to true,
+%the following numberOfReplications variable is ignored. The program will
+%always run at least 5 replications before determining if additional
+%replications are needed to shrink the confidence interval size
+calculateReplicationsRequired = false; 
+%set numberOfReplications to the number of desired replications of the
+%simulation
+numberOfReplications = 10; 
+%seed to used for random number generation in the simulation. If you set a
+%seed value here and run manySim, the control variable for the seed in Sim
+%is ignored
+seed = 5437; 
 %---------------------------------------------
 %            End of Contol Variables
 %---------------------------------------------

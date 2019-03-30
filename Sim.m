@@ -1,5 +1,14 @@
 %Main control flow for one replication of the queuing system simulation.
-
+%
+%Only run this file if you want to do one replication! for multiple
+%replications, you must run manySim.m.
+%
+%You can run this file by simply typing "Sim" in the command window, and
+%the simulation output will be placed in a ile named 'output.txt'. If you
+%want an output file of a different name or path, you must specify that as
+%a parameter to Sim, along with a boolen to inform the program that Sim is
+%running from command window as a single replication.
+%
 %callFromCommandWindow: a boolean value to indicate wether a simulation is
 %                       ran as a part of many replications, or once through 
 %                       the command window. This is need because there are 
@@ -17,22 +26,45 @@ function Sim(callFromCommandWindow, outputFileName)
         outputFileName = 'output.txt';
     end
 
-    %variables which affect program control flow
-    global alternativeStrategy alternativePriority removeInitializationBias;
-    global maxSimulationTime seed verbose readInFilesMode initializationPhaseLength;
     %---------------------------------------------
     %               Contol Variables
     %---------------------------------------------
-    maxSimulationTime = 3000; %change to set the length of time the simulation runs
-    alternativeStrategy = false; %set true to use alternative round-robin C1 scheduling
-    alternativePriority = false; %set true to use alternative C1 queue priorities
-    verbose = false; %set true to have information on the status of the program displayed in the console window
+    %variables which affect program control flow
+    global alternativeStrategy alternativePriority removeInitializationBias;
+    global maxSimulationTime seed verbose readInFilesMode initializationPhaseLength;
+    %change maxSimulationTime to set the length of time on replication runs
+    maxSimulationTime = 3000; 
+    %set alternativeStrategy to true to use alternative round-robin C1
+    %scheduling, false will pick the shortest queue (regular system behaviour)
+    alternativeStrategy = false; 
+    %set alternativePriority to true to use alternative C1 queue priorities
+    %for when 2 C1 queues are the same length. The alternative prioirty is
+    %W3 highest, W1 lowest. This value set to false uses the normal
+    %priority of W1 highest, W3 lowest
+    alternativePriority = false; 
+    %set verbose to true to have information on the status of the program 
+    %displayed in the console window. This does not affect the system
+    %output, which is written to a txt file
+    verbose = false; 
     if callFromCommandWindow %only set the seed here if doing one replication
-        seed = 5437; %change to set the seed used in random number generation (5437)
+        %change to set the seed used in random number generation
+        seed = 5437; 
     end
-    readInFilesMode = false; %set true if we have existing .dat files that we want to read in
-    removeInitializationBias = true; %set to true to only collect data once initialization phase is over
-    initializationPhaseLength = 225; %change to set the simulation time we start recording data (testing indicates that the true length is 225, but this can be changed if desired to see effects)
+    %set readInFilesMode to true to use the existing service times in the 
+    %.dat files provided. NOTE: If you use this, you cannot set
+    %maxSimulationTime to more than 3000, there is not enough samples in
+    %the .dat files to simulate any longer
+    readInFilesMode = false; 
+    %set removeInitializationBias to true to only collect data once 
+    %initialization phase is over. If set to false, all data from time 0 to
+    %maxSimulationTime will be used. If set to true, only data from 
+    %initializationPhaseLength to maxSimulationTime will be used
+    removeInitializationBias = true;
+    %change to set the simulation time we start recording data. Testing 
+    %indicates that the true length of the initialization phase is 225, but 
+    %this  variable can be changed if desired to see the effects on the
+    %output values
+    initializationPhaseLength = 225; 
     %---------------------------------------------
     %            End of Contol Variables
     %---------------------------------------------
