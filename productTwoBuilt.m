@@ -1,12 +1,10 @@
 % Product 2
 function productTwoBuilt()
     global queueC1W2 queueC2W2 verbose;
-    global inspectorOneBlocked inspectorTwoBlocked;
+    global inspectorOneBlocked;
     global W2Dist rngW2 FEL clock P2Produced P2InProduction;
-    global lastComponentInspector2Held;
     global workstationTwoIdle idleStartW2;
-    global Inspector1IdleTime idleEndI1 idleStartI1;
-    global Inspector2IdleTime idleEndI2 idleStartI2;
+    global W2IdleStartTimes I1IdleEndTimes;
     
     P2Produced = P2Produced + 1;
     P2InProduction = false;
@@ -15,14 +13,13 @@ function productTwoBuilt()
        workstationTwoIdle = true;
        % Read the CURRENT time for when the workstation starts being idle
        idleStartW2 = clock;
+       W2IdleStartTimes = [W2IdleStartTimes clock];
     else
         queueC1W2 = queueC1W2 - 1;
         queueC2W2 = queueC2W2 - 1;
         if inspectorOneBlocked == true
             inspectorOneBlocked = false;
-            idleEndI1 = clock;
-            difference = idleEndI1 - idleStartI1;
-            Inspector1IdleTime = Inspector1IdleTime + difference;
+            I1IdleEndTimes = [I1IdleEndTimes clock];
             
             % Generates C1Ready event AT CURRENT TIME
             % This causes the inspector to try to place it's component again

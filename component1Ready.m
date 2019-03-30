@@ -10,10 +10,8 @@ function component1Ready()
     global verbose;
     global clock;
     global W1Dist W2Dist W3Dist rngW1 rngW2 rngW3;
-    global Workstation1IdleTime Workstation2IdleTime Workstation3IdleTime;
     global workstationOneIdle workstationTwoIdle workstationThreeIdle;
-    global idleStartW1 idleEndW1 idleStartW2 idleEndW2 idleStartW3 idleEndW3; 
-    global idleStartI1;
+    global W1IdleEndTimes W2IdleEndTimes W3IdleEndTimes I1IdleStartTimes;
     
     if isQueueFull(queueC1W1) && isQueueFull(queueC1W2) && isQueueFull(queueC1W3)
         if verbose
@@ -21,7 +19,7 @@ function component1Ready()
         end
         %all queues full, block inspector one
         inspectorOneBlocked = true;
-        idleStartI1 = clock;
+        I1IdleStartTimes = [I1IdleStartTimes clock];
     else
         %there is space for a component 1 somewhere, we must figure out
         %which queue to place the component in
@@ -85,10 +83,10 @@ function component1Ready()
             end
             
             %clear workstation idle bit and increment workstation idle time
-            workstationOneIdle = false;
-            idleEndW1 = clock;            
-            difference = idleEndW1 - idleStartW1;
-            Workstation1IdleTime = Workstation1IdleTime + difference;
+            if workstationOneIdle
+                workstationOneIdle = false;
+                W1IdleEndTimes = [W1IdleEndTimes clock];
+            end
             
             %generate P1BuiltEvent
             %get the inspection time from entering a random numer [0, 1] into
@@ -106,10 +104,10 @@ function component1Ready()
             end
             
             %clear workstation idle bit and increment workstation idle time
-            workstationTwoIdle = false;
-            idleEndW2 = clock;            
-            difference = idleEndW2 - idleStartW2;
-            Workstation2IdleTime = Workstation2IdleTime + difference;
+            if workstationTwoIdle
+                workstationTwoIdle = false;
+                W2IdleEndTimes = [W2IdleEndTimes clock];
+            end
             unblockInspector2Check(2);
             %generate P2BuiltEvent
             timeToAssemble = W2Dist.icdf(rand(rngW2));
@@ -125,10 +123,10 @@ function component1Ready()
             end
             
             %clear workstation idle bit and increment workstation idle time
-            workstationThreeIdle = false;
-            idleEndW3 = clock;            
-            difference = idleEndW3 - idleStartW3;
-            Workstation3IdleTime = Workstation3IdleTime + difference;
+            if workstationThreeIdle
+                workstationThreeIdle = false;    
+                W3IdleEndTimes = [W3IdleEndTimes clock];
+            end
             unblockInspector2Check(3);
             %generate P3BuiltEvent
             timeToAssemble = W3Dist.icdf(rand(rngW3));
