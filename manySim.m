@@ -32,9 +32,9 @@ global numberOfReplications
 %how many replications are needed to get confidence intervals for
 %statistics of a width within 20% of the estimated value. If set to true,
 %the following numberOfReplications variable is ignored. The program will
-%always run at least 5 replications before determining if additional
+%always run at least 10 replications before determining if additional
 %replications are needed to shrink the confidence interval size
-calculateReplicationsRequired = false; 
+calculateReplicationsRequired = true; 
 %set numberOfReplications to the number of desired replications of the
 %simulation
 numberOfReplications = 10; 
@@ -138,7 +138,7 @@ printStatistic(fd, 'Workstation 2 C2 queue size', avgC2W2Sizes);
 printStatistic(fd, 'Workstation 3 C1 queue size', avgC1W3Sizes);
 printStatistic(fd, 'Workstation 3 C3 queue size', avgC3W3Sizes);
 printStatistic(fd, 'Proportion of time Inspector 1 idle', I1IdleTimes/maxSimulationTime);
-printStatistic(fd, 'Proportion of time Inspector 1 idle', I2IdleTimes/maxSimulationTime);
+printStatistic(fd, 'Proportion of time Inspector 2 idle', I2IdleTimes/maxSimulationTime);
 printStatistic(fd, 'Proportion of time Workstation 1 idle', W1IdleTimes/maxSimulationTime);
 printStatistic(fd, 'Proportion of time Workstation 2 idle', W2IdleTimes/maxSimulationTime);
 printStatistic(fd, 'Proportion of time Workstation 3 idle', W3IdleTimes/maxSimulationTime);
