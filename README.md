@@ -101,9 +101,9 @@ TODO:
 3. ~~implement waiting time collection to do Little's Law calculations~~
 4. ~~ensure that clock always moves forwards for each event~~
 5. ~~check that the number of products prodcued matches the number of components inspected~~
-6. sensitivity analysis (check that changing parameter values affects the results in the expected way)
+6. ~~sensitivity analysis (check that changing parameter values affects the results in the expected way)~~
 7. ~~confidence intervals for each output value~~
 8. ~~script to run many replications of simulation~~
-9  determine length of initializaation phase
+9  ~~determine length of initializaation phase~~
 10. ~~(optional) complete verbose mode~~
-11. write report section for deliverable 3
+11. ~~write report section for deliverable 3~~
