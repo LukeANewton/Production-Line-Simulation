@@ -164,7 +164,7 @@ function Sim(callFromCommandWindow, outputFileName)
     end
     
     calculateIdleTimes();
-    plotEventTimes(5);
+    %plotEventTimes(5);
     
     fd = fopen(outputFileName, 'w');
     fprintf(fd, '--------------------------------------------------------------------------------------------\n');

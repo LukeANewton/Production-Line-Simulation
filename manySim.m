@@ -41,7 +41,7 @@ function manySim()
     %the following numberOfReplications variable is ignored. The program will
     %always run at least 10 replications before determining if additional
     %replications are needed to shrink the confidence interval size
-    calculateReplicationsRequired = false; 
+    calculateReplicationsRequired = true; 
     %set numberOfReplications to the number of desired replications of the
     %simulation
     numberOfReplications = 5; 
@@ -79,6 +79,8 @@ function manySim()
              delete(strcat('output/', oldOutput(i).name));
         elseif(regexp(oldOutput(i).name, 'FinalResults.txt'))
             delete(strcat('output/', oldOutput(i).name));
+        elseif(regexp(oldOutput(i).name, 'AlternativeComparison.txt'))
+            delete(strcat('output/', oldOutput(i).name));
         end
     end
      
@@ -94,7 +96,7 @@ function manySim()
         W1IdleTimes = zeros(arraySize, numberOfReplications);
         W2IdleTimes = zeros(arraySize, numberOfReplications);
         W3IdleTimes = zeros(arraySize, numberOfReplications);
-        P1Productions = zeros(arraySize, numberOfReplications)
+        P1Productions = zeros(arraySize, numberOfReplications);
         P2Productions = zeros(arraySize, numberOfReplications);
         P3Productions = zeros(arraySize, numberOfReplications);
         totalProductions = zeros(arraySize, numberOfReplications);
@@ -123,7 +125,84 @@ function manySim()
         alternativePriority = false;
         alternativeStrategy = true;
         runManyReplications('AltStrategyDesign', 3);
+        compareDesigns();
     end
+end
+
+function compareDesigns()
+    global I1IdleTimes I2IdleTimes W1IdleTimes W2IdleTimes W3IdleTimes
+    global P1Productions P2Productions P3Productions totalProductions
+    global C1Inspections C2Inspections C3Inspections
+    global avgC1W1Sizes avgC1W2Sizes avgC1W3Sizes avgC2W2Sizes avgC3W3Sizes
+    global maxSimulationTime
+
+    fd = fopen('output/AlternativeComparison.txt', 'w');
+    %compare designs 1 and 2
+    fprintf(fd, '------------------------------------------------------------\n');
+    fprintf(fd, 'Comparing Default Design with Alternative Priority Design\n\n'); 
+    fprintf(fd, 'a negative value indicates that the value for alternative\n');
+    fprintf(fd, 'priority is higher, while positive means the default design\n');
+    fprintf(fd, 'value is higher\n');
+    printComparison(fd, P1Productions(1,:), P1Productions(2,:), 'P1 Prodcuction');
+    printComparison(fd, P2Productions(1,:), P2Productions(2,:), 'P2 Prodcuction');
+    printComparison(fd, P3Productions(1,:), P3Productions(2,:), 'P3 Prodcuction');
+    printComparison(fd, totalProductions(1,:), totalProductions(2,:), 'Total Products Made');
+    printComparison(fd, C1Inspections(1,:), C1Inspections(2,:), 'C1 Inspected');
+    printComparison(fd, C2Inspections(1,:), C2Inspections(2,:), 'C2 Inspected');
+    printComparison(fd, C3Inspections(1,:), C3Inspections(2,:), 'C3 Inspected');
+    printComparison(fd, avgC1W1Sizes(1,:), avgC1W1Sizes(2,:), 'Workstation 1 C1 queue size');
+    printComparison(fd, avgC1W2Sizes(1,:), avgC1W2Sizes(2,:), 'Workstation 2 C1 queue size');
+    printComparison(fd, avgC2W2Sizes(1,:), avgC2W2Sizes(2,:), 'Workstation 2 C2 queue size');
+    printComparison(fd, avgC1W3Sizes(1,:), avgC1W3Sizes(2,:), 'Workstation 3 C1 queue size');
+    printComparison(fd, avgC3W3Sizes(1,:), avgC3W3Sizes(2,:), 'Workstation 3 C3 queue size');
+    printComparison(fd, I1IdleTimes(1,:)/maxSimulationTime, I1IdleTimes(2,:)/maxSimulationTime, 'Proportion of time Inspector 1 idle');
+    printComparison(fd, I2IdleTimes(1,:)/maxSimulationTime, I2IdleTimes(2,:)/maxSimulationTime, 'Proportion of time Inspector 2 idle');
+    printComparison(fd, W1IdleTimes(1,:)/maxSimulationTime, W1IdleTimes(2,:)/maxSimulationTime, 'Proportion of time Workstation 1 idle');
+    printComparison(fd, W2IdleTimes(1,:)/maxSimulationTime, W2IdleTimes(2,:)/maxSimulationTime, 'Proportion of time Workstation 2 idle');
+    printComparison(fd, W3IdleTimes(1,:)/maxSimulationTime, W3IdleTimes(2,:)/maxSimulationTime, 'Proportion of time Workstation 3 idle');
+    %compare designs 1 and 3
+    fprintf(fd, '------------------------------------------------------------\n');
+    fprintf(fd, 'Comparing Default Design with Alternative Strategy Design\n\n'); 
+    fprintf(fd, 'a negative value indicates that the value for alternative\n');
+    fprintf(fd, 'strtategy is higher, while positive means the default design\n');
+    fprintf(fd, 'value is higher\n');
+    printComparison(fd, P1Productions(1,:), P1Productions(3,:), 'P1 Prodcuction');
+    printComparison(fd, P2Productions(1,:), P2Productions(3,:), 'P2 Prodcuction');
+    printComparison(fd, P3Productions(1,:), P3Productions(3,:), 'P3 Prodcuction');
+    printComparison(fd, totalProductions(1,:), totalProductions(3,:), 'Total Products Made');
+    printComparison(fd, C1Inspections(1,:), C1Inspections(3,:), 'C1 Inspected');
+    printComparison(fd, C2Inspections(1,:), C2Inspections(3,:), 'C2 Inspected');
+    printComparison(fd, C3Inspections(1,:), C3Inspections(3,:), 'C3 Inspected');
+    printComparison(fd, avgC1W1Sizes(1,:), avgC1W1Sizes(3,:), 'Workstation 1 C1 queue size');
+    printComparison(fd, avgC1W2Sizes(1,:), avgC1W2Sizes(3,:), 'Workstation 2 C1 queue size');
+    printComparison(fd, avgC2W2Sizes(1,:), avgC2W2Sizes(3,:), 'Workstation 2 C2 queue size');
+    printComparison(fd, avgC1W3Sizes(1,:), avgC1W3Sizes(3,:), 'Workstation 3 C1 queue size');
+    printComparison(fd, avgC3W3Sizes(1,:), avgC3W3Sizes(3,:), 'Workstation 3 C3 queue size');
+    printComparison(fd, I1IdleTimes(1,:)/maxSimulationTime, I1IdleTimes(3,:)/maxSimulationTime, 'Proportion of time Inspector 1 idle');
+    printComparison(fd, I2IdleTimes(1,:)/maxSimulationTime, I2IdleTimes(3,:)/maxSimulationTime, 'Proportion of time Inspector 2 idle');
+    printComparison(fd, W1IdleTimes(1,:)/maxSimulationTime, W1IdleTimes(3,:)/maxSimulationTime, 'Proportion of time Workstation 1 idle');
+    printComparison(fd, W2IdleTimes(1,:)/maxSimulationTime, W2IdleTimes(3,:)/maxSimulationTime, 'Proportion of time Workstation 2 idle');
+    printComparison(fd, W3IdleTimes(1,:)/maxSimulationTime, W3IdleTimes(3,:)/maxSimulationTime, 'Proportion of time Workstation 3 idle');
+    fclose(fd);
+end
+
+function printComparison(fd, data1, data2, name)
+    [avg, CI] = compareData(data1, data2);
+    
+    fprintf(fd, '------------------------------------------------------------\n');
+    fprintf(fd, '%s\n\n', name);
+    fprintf(fd, 'average:\t%f\n', avg);
+    fprintf(fd, '95%% confidence interval:\t[%f %f]\n\n', CI(1), CI(2));
+end
+
+function [avg, CI] = compareData(data1,data2)
+    global numberOfReplications;
+    
+    diff = data1-data2;
+    avg = sum(diff)/numberOfReplications;
+    var = sum((diff-avg).^2)/(numberOfReplications-1);
+    
+    CI = createCI(avg, var);
 end
 
 function runManyReplications(filePrefix, statArrayIndex)
@@ -154,7 +233,7 @@ function runManyReplications(filePrefix, statArrayIndex)
     
     initializeRandomNumberStreams(seed);
     initializeDistributions();
-
+    
     %run trials for specified number of times and collect statistics
     for i = 1:numberOfReplications
         %do one replication
@@ -170,7 +249,7 @@ function runManyReplications(filePrefix, statArrayIndex)
         W1IdleTimes(statArrayIndex,i) = Workstation1IdleTime;
         W2IdleTimes(statArrayIndex,i) = Workstation2IdleTime;
         W3IdleTimes(statArrayIndex,i) = Workstation3IdleTime;
-        P1Productions(statArrayIndex,i) = P1Produced
+        P1Productions(statArrayIndex,i) = P1Produced;
         P2Productions(statArrayIndex,i) = P2Produced;
         P3Productions(statArrayIndex,i) = P3Produced;
         totalProductions(statArrayIndex,i) = P1Produced + P2Produced + P3Produced;
@@ -224,23 +303,23 @@ function runManyReplications(filePrefix, statArrayIndex)
         printStatistic(fd, 'Proportion of time Workstation 3 idle', W3IdleTimes/maxSimulationTime);
     else
         fd = fopen(strcat('output/',filePrefix,'FinalResults.txt'), 'w');
-        printStatistic(fd, 'P1 Produced', P1Productions(statArrayIndex));
-        printStatistic(fd, 'P2 Produced', P2Productions(statArrayIndex));
-        printStatistic(fd, 'P3 Produced', P3Productions(statArrayIndex));
-        printStatistic(fd, 'Total Produced', totalProductions(statArrayIndex));
-        printStatistic(fd, 'C1 Inspected', C1Inspections(statArrayIndex));
-        printStatistic(fd, 'C2 Inspected', C2Inspections(statArrayIndex));
-        printStatistic(fd, 'C3 Inspected', C3Inspections(statArrayIndex));
-        printStatistic(fd, 'Workstation 1 C1 queue size', avgC1W1Sizes(statArrayIndex));
-        printStatistic(fd, 'Workstation 2 C1 queue size', avgC1W2Sizes(statArrayIndex));
-        printStatistic(fd, 'Workstation 2 C2 queue size', avgC2W2Sizes(statArrayIndex));
-        printStatistic(fd, 'Workstation 3 C1 queue size', avgC1W3Sizes(statArrayIndex));
-        printStatistic(fd, 'Workstation 3 C3 queue size', avgC3W3Sizes(statArrayIndex));
-        printStatistic(fd, 'Proportion of time Inspector 1 idle', I1IdleTimes(statArrayIndex)/maxSimulationTime);
-        printStatistic(fd, 'Proportion of time Inspector 2 idle', I2IdleTimes(statArrayIndex)/maxSimulationTime);
-        printStatistic(fd, 'Proportion of time Workstation 1 idle', W1IdleTimes(statArrayIndex)/maxSimulationTime);
-        printStatistic(fd, 'Proportion of time Workstation 2 idle', W2IdleTimes(statArrayIndex)/maxSimulationTime);
-        printStatistic(fd, 'Proportion of time Workstation 3 idle', W3IdleTimes(statArrayIndex)/maxSimulationTime);
+        printStatistic(fd, 'P1 Produced', P1Productions(statArrayIndex,:));
+        printStatistic(fd, 'P2 Produced', P2Productions(statArrayIndex,:));
+        printStatistic(fd, 'P3 Produced', P3Productions(statArrayIndex,:));
+        printStatistic(fd, 'Total Produced', totalProductions(statArrayIndex,:));
+        printStatistic(fd, 'C1 Inspected', C1Inspections(statArrayIndex,:));
+        printStatistic(fd, 'C2 Inspected', C2Inspections(statArrayIndex,:));
+        printStatistic(fd, 'C3 Inspected', C3Inspections(statArrayIndex,:));
+        printStatistic(fd, 'Workstation 1 C1 queue size', avgC1W1Sizes(statArrayIndex,:));
+        printStatistic(fd, 'Workstation 2 C1 queue size', avgC1W2Sizes(statArrayIndex,:));
+        printStatistic(fd, 'Workstation 2 C2 queue size', avgC2W2Sizes(statArrayIndex,:));
+        printStatistic(fd, 'Workstation 3 C1 queue size', avgC1W3Sizes(statArrayIndex,:));
+        printStatistic(fd, 'Workstation 3 C3 queue size', avgC3W3Sizes(statArrayIndex,:));
+        printStatistic(fd, 'Proportion of time Inspector 1 idle', I1IdleTimes(statArrayIndex,:)/maxSimulationTime);
+        printStatistic(fd, 'Proportion of time Inspector 2 idle', I2IdleTimes(statArrayIndex,:)/maxSimulationTime);
+        printStatistic(fd, 'Proportion of time Workstation 1 idle', W1IdleTimes(statArrayIndex,:)/maxSimulationTime);
+        printStatistic(fd, 'Proportion of time Workstation 2 idle', W2IdleTimes(statArrayIndex,:)/maxSimulationTime);
+        printStatistic(fd, 'Proportion of time Workstation 3 idle', W3IdleTimes(statArrayIndex,:)/maxSimulationTime);
     end
     fclose(fd);
 end
