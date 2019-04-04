@@ -19,10 +19,8 @@
 function Sim(callFromCommandWindow, outputFileName)
     %these default values allow us to run the simulation by just typing 
     %'Sim' into the command window
-    if ~exist('callFromCommandWindow', 'var')
+    if nargin == 0
         callFromCommandWindow = true;
-    end
-    if ~exist('outputFileName', 'var')
         outputFileName = 'output.txt';
     end
 
@@ -34,14 +32,6 @@ function Sim(callFromCommandWindow, outputFileName)
     global maxSimulationTime seed verbose readInFilesMode initializationPhaseLength;
     %change maxSimulationTime to set the length of time on replication runs
     maxSimulationTime = 3000; 
-    %set alternativeStrategy to true to use alternative round-robin C1
-    %scheduling, false will pick the shortest queue (regular system behaviour)
-    alternativeStrategy = false; 
-    %set alternativePriority to true to use alternative C1 queue priorities
-    %for when 2 C1 queues are the same length. The alternative prioirty is
-    %W3 highest, W1 lowest. This value set to false uses the normal
-    %priority of W1 highest, W3 lowest
-    alternativePriority = false; 
     %set verbose to true to have information on the status of the program 
     %displayed in the console window. This does not affect the system
     %output, which is written to a txt file
@@ -49,6 +39,14 @@ function Sim(callFromCommandWindow, outputFileName)
     if callFromCommandWindow %only set the seed here if doing one replication
         %change to set the seed used in random number generation
         seed = 5437; 
+        %set alternativeStrategy to true to use alternative round-robin C1
+        %scheduling, false will pick the shortest queue (regular system behaviour)
+        alternativeStrategy = false; 
+        %set alternativePriority to true to use alternative C1 queue priorities
+        %for when 2 C1 queues are the same length. The alternative prioirty is
+        %W3 highest, W1 lowest. This value set to false uses the normal
+        %priority of W1 highest, W3 lowest
+        alternativePriority = false; 
     end
     %set readInFilesMode to true to use the existing service times in the 
     %.dat files provided. NOTE: If you use this, you cannot set

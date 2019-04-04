@@ -23,11 +23,12 @@ global arrayC1W1 arrayC1W2 arrayC2W2 arrayC1W3 arrayC3W3;
 global seed;
 %the length of one simulation run (set in Sim.m)
 global maxSimulationTime;
-global numberOfReplications
 
 %---------------------------------------------
 %               Contol Variables
 %---------------------------------------------
+global numberOfReplications compareAlternateDesigns;
+global alternativeStrategy alternativePriority;
 %Set calculateReplicationsRequired to true to have the program determine
 %how many replications are needed to get confidence intervals for
 %statistics of a width within 20% of the estimated value. If set to true,
@@ -37,11 +38,24 @@ global numberOfReplications
 calculateReplicationsRequired = true; 
 %set numberOfReplications to the number of desired replications of the
 %simulation
-numberOfReplications = 10; 
+numberOfReplications = 5; 
 %seed to used for random number generation in the simulation. If you set a
 %seed value here and run manySim, the control variable for the seed in Sim
 %is ignored
 seed = 5437; 
+%set alternativeStrategy to true to use alternative round-robin C1
+%scheduling, false will pick the shortest queue (regular system behaviour)
+alternativeStrategy = false; 
+%set alternativePriority to true to use alternative C1 queue priorities
+%for when 2 C1 queues are the same length. The alternative prioirty is
+%W3 highest, W1 lowest. This value set to false uses the normal
+%priority of W1 highest, W3 lowest
+alternativePriority = false;
+%set compareAlternateDesigns to true to run the the script 3 times, once
+%for each alternative design, and then produce an output file containing
+%the comparison results. set to false to run multiple replications for one
+%system design which is spcified by the above two values.
+compareAlternateDesigns = false;
 %---------------------------------------------
 %            End of Contol Variables
 %---------------------------------------------
@@ -112,7 +126,7 @@ for i = 1:numberOfReplications
     
     %check if we need to do another - are CIs width < 20% of mean?
     if i >= 10 %we want to do at least 10 replications
-        if isCIWidthOver20Percent(P1Productions)||isCIWidthOver20Percent(P2Productions)||isCIWidthOver20Percent(P3Productions)||isCIWidthOver20Percent(C1Inspections)||isCIWidthOver20Percent(C2Inspections)||isCIWidthOver20Percent(C3Inspections)||isCIWidthOver20Percent(I1IdleTimes)||isCIWidthOver20Percent(I2IdleTimes)||isCIWidthOver20Percent(W1IdleTimes)||isCIWidthOver20Percent(W2IdleTimes)||isCIWidthOver20Percent(W3IdleTimes)||isCIWidthOver20Percent(avgC1W1Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W3Sizes)||isCIWidthOver20Percent(avgC2W2Sizes)||isCIWidthOver20Percent(avgC3W3Sizes)
+        if isCIWidthOver20Percent(P1Productions)||isCIWidthOver20Percent(P2Productions)||isCIWidthOver20Percent(P3Productions)||isCIWidthOver20Percent(C1Inspections)||isCIWidthOver20Percent(C2Inspections)||isCIWidthOver20Percent(C3Inspections)||isCIWidthOver20Percent(I1IdleTimes)||isCIWidthOver20Percent(I2IdleTimes)||isCIWidthOver20Percent(W1IdleTimes)||isCIWidthOver20Percent(W2IdleTimes)||isCIWidthOver20Percent(W3IdleTimes)||isCIWidthOver20Percent(avgC1W1Sizes)||isCIWidthOver20Percent(avgC1W2Sizes)||isCIWidthOver20Percent(avgC1W3Sizes)||isCIWidthOver20Percent(avgC2W2Sizes)||isCIWidthOver20Percent(avgC3W3Sizes)
             %if any CI too large, do another replication
             numberOfReplications = numberOfReplications + 1;
         end
