@@ -93,17 +93,3 @@ initializeRandomNumberStreams.m contains a funciton which initializes independen
 manySim.m contains a script to run multiple replications of the simulation and collect statistics from each
 
 getNextReadInValue.m contains a function that returns the first element of an array and returns the same array less the first element
-
-----------------------------------------------------------------------------------------------------------------------------------
-TODO:
-1. ~~create different random number stream for each distribution~~
-2. ~~implement mode of operation to pull service times from empirical data~~
-3. ~~implement waiting time collection to do Little's Law calculations~~
-4. ~~ensure that clock always moves forwards for each event~~
-5. ~~check that the number of products prodcued matches the number of components inspected~~
-6. ~~sensitivity analysis (check that changing parameter values affects the results in the expected way)~~
-7. ~~confidence intervals for each output value~~
-8. ~~script to run many replications of simulation~~
-9  ~~determine length of initializaation phase~~
-10. ~~(optional) complete verbose mode~~
-11. ~~write report section for deliverable 3~~
