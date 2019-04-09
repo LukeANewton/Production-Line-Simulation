@@ -41,10 +41,10 @@ function manySim()
     %the following numberOfReplications variable is ignored. The program will
     %always run at least 10 replications before determining if additional
     %replications are needed to shrink the confidence interval size
-    calculateReplicationsRequired = true; 
+    calculateReplicationsRequired = false; 
     %set numberOfReplications to the number of desired replications of the
     %simulation
-    numberOfReplications = 5; 
+    numberOfReplications = 10; 
     %seed to used for random number generation in the simulation. If you set a
     %seed value here and run manySim, the control variable for the seed in Sim
     %is ignored
