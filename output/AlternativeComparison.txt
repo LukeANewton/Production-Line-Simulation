@@ -1,0 +1,216 @@
+------------------------------------------------------------
+Comparing Default Design with Alternative Priority Design
+
+a negative value indicates that the value for alternative
+priority is higher, while positive means the default design
+value is higher
+------------------------------------------------------------
+P1 Prodcuction
+
+average:	116.800000
+95% confidence interval:	[109.045349 124.554651]
+
+------------------------------------------------------------
+P2 Prodcuction
+
+average:	-36.600000
+95% confidence interval:	[-42.101999 -31.098001]
+
+------------------------------------------------------------
+P3 Prodcuction
+
+average:	-80.000000
+95% confidence interval:	[-84.696966 -75.303034]
+
+------------------------------------------------------------
+Total Products Made
+
+average:	0.200000
+95% confidence interval:	[-1.140433 1.540433]
+
+------------------------------------------------------------
+C1 Inspected
+
+average:	0.400000
+95% confidence interval:	[-0.368986 1.168986]
+
+------------------------------------------------------------
+C2 Inspected
+
+average:	-37.500000
+95% confidence interval:	[-42.781059 -32.218941]
+
+------------------------------------------------------------
+C3 Inspected
+
+average:	-80.000000
+95% confidence interval:	[-84.696966 -75.303034]
+
+------------------------------------------------------------
+Workstation 1 C1 queue size
+
+average:	0.144769
+95% confidence interval:	[0.120002 0.169536]
+
+------------------------------------------------------------
+Workstation 2 C1 queue size
+
+average:	-0.581434
+95% confidence interval:	[-0.663410 -0.499459]
+
+------------------------------------------------------------
+Workstation 2 C2 queue size
+
+average:	1.317141
+95% confidence interval:	[1.125531 1.508751]
+
+------------------------------------------------------------
+Workstation 3 C1 queue size
+
+average:	-0.805041
+95% confidence interval:	[-0.860740 -0.749342]
+
+------------------------------------------------------------
+Workstation 3 C3 queue size
+
+average:	1.680184
+95% confidence interval:	[1.587784 1.772583]
+
+------------------------------------------------------------
+Proportion of time Inspector 1 idle
+
+average:	-0.001023
+95% confidence interval:	[-0.002123 0.000077]
+
+------------------------------------------------------------
+Proportion of time Inspector 2 idle
+
+average:	0.807754
+95% confidence interval:	[0.755429 0.860078]
+
+------------------------------------------------------------
+Proportion of time Workstation 1 idle
+
+average:	-0.189546
+95% confidence interval:	[-0.225156 -0.153936]
+
+------------------------------------------------------------
+Proportion of time Workstation 2 idle
+
+average:	0.135055
+95% confidence interval:	[0.107162 0.162949]
+
+------------------------------------------------------------
+Proportion of time Workstation 3 idle
+
+average:	0.251602
+95% confidence interval:	[0.231582 0.271622]
+
+------------------------------------------------------------
+Comparing Default Design with Alternative Strategy Design
+
+a negative value indicates that the value for alternative
+strtategy is higher, while positive means the default design
+value is higher
+------------------------------------------------------------
+P1 Prodcuction
+
+average:	112.600000
+95% confidence interval:	[104.820459 120.379541]
+
+------------------------------------------------------------
+P2 Prodcuction
+
+average:	-42.400000
+95% confidence interval:	[-47.648118 -37.151882]
+
+------------------------------------------------------------
+P3 Prodcuction
+
+average:	-69.600000
+95% confidence interval:	[-73.549968 -65.650032]
+
+------------------------------------------------------------
+Total Products Made
+
+average:	0.600000
+95% confidence interval:	[-0.365658 1.565658]
+
+------------------------------------------------------------
+C1 Inspected
+
+average:	0.400000
+95% confidence interval:	[-0.622846 1.422846]
+
+------------------------------------------------------------
+C2 Inspected
+
+average:	-42.800000
+95% confidence interval:	[-48.277141 -37.322859]
+
+------------------------------------------------------------
+C3 Inspected
+
+average:	-70.100000
+95% confidence interval:	[-74.180949 -66.019051]
+
+------------------------------------------------------------
+Workstation 1 C1 queue size
+
+average:	0.173649
+95% confidence interval:	[0.137961 0.209338]
+
+------------------------------------------------------------
+Workstation 2 C1 queue size
+
+average:	-0.862064
+95% confidence interval:	[-1.094746 -0.629381]
+
+------------------------------------------------------------
+Workstation 2 C2 queue size
+
+average:	1.232360
+95% confidence interval:	[0.917193 1.547526]
+
+------------------------------------------------------------
+Workstation 3 C1 queue size
+
+average:	-0.910277
+95% confidence interval:	[-1.110473 -0.710080]
+
+------------------------------------------------------------
+Workstation 3 C3 queue size
+
+average:	1.481609
+95% confidence interval:	[1.288243 1.674975]
+
+------------------------------------------------------------
+Proportion of time Inspector 1 idle
+
+average:	-0.002612
+95% confidence interval:	[-0.004772 -0.000451]
+
+------------------------------------------------------------
+Proportion of time Inspector 2 idle
+
+average:	0.746953
+95% confidence interval:	[0.653577 0.840328]
+
+------------------------------------------------------------
+Proportion of time Workstation 1 idle
+
+average:	-0.182046
+95% confidence interval:	[-0.212824 -0.151268]
+
+------------------------------------------------------------
+Proportion of time Workstation 2 idle
+
+average:	0.159558
+95% confidence interval:	[0.130163 0.188953]
+
+------------------------------------------------------------
+Proportion of time Workstation 3 idle
+
+average:	0.217940
+95% confidence interval:	[0.193720 0.242159]
+

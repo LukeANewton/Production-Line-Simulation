@@ -1,0 +1,119 @@
+-------------------------------------------------------
+P1 Produced
+
+average:	234.000000
+variance:	210.666667
+95% confidence interval:	[223.617052 244.382948]
+
+-------------------------------------------------------
+P2 Produced
+
+average:	28.700000
+variance:	37.788889
+95% confidence interval:	[24.302510 33.097490]
+
+-------------------------------------------------------
+P3 Produced
+
+average:	5.000000
+variance:	7.555556
+95% confidence interval:	[3.033672 6.966328]
+
+-------------------------------------------------------
+Total Produced
+
+average:	267.700000
+variance:	229.344444
+95% confidence interval:	[256.866547 278.533453]
+
+-------------------------------------------------------
+C1 Inspected
+
+average:	267.700000
+variance:	225.566667
+95% confidence interval:	[256.956143 278.443857]
+
+-------------------------------------------------------
+C2 Inspected
+
+average:	28.400000
+variance:	38.933333
+95% confidence interval:	[23.936417 32.863583]
+
+-------------------------------------------------------
+C3 Inspected
+
+average:	5.000000
+variance:	7.555556
+95% confidence interval:	[3.033672 6.966328]
+
+-------------------------------------------------------
+Workstation 1 C1 queue size
+
+average:	0.245047
+variance:	0.000645
+95% confidence interval:	[0.226882 0.263212]
+
+-------------------------------------------------------
+Workstation 2 C1 queue size
+
+average:	0.096138
+variance:	0.003211
+95% confidence interval:	[0.055604 0.136672]
+
+-------------------------------------------------------
+Workstation 2 C2 queue size
+
+average:	1.668673
+variance:	0.044487
+95% confidence interval:	[1.517789 1.819556]
+
+-------------------------------------------------------
+Workstation 3 C1 queue size
+
+average:	0.011021
+variance:	0.000121
+95% confidence interval:	[0.003137 0.018905]
+
+-------------------------------------------------------
+Workstation 3 C3 queue size
+
+average:	1.904122
+variance:	0.003974
+95% confidence interval:	[1.859026 1.949218]
+
+-------------------------------------------------------
+Proportion of time Inspector 1 idle
+
+average:	0.000000
+variance:	0.000000
+95% confidence interval:	[0.000000 0.000000]
+
+-------------------------------------------------------
+Proportion of time Inspector 2 idle
+
+average:	0.860030
+variance:	0.001766
+95% confidence interval:	[0.829968 0.890091]
+
+-------------------------------------------------------
+Proportion of time Workstation 1 idle
+
+average:	0.556550
+variance:	0.000385
+95% confidence interval:	[0.542513 0.570586]
+
+-------------------------------------------------------
+Proportion of time Workstation 2 idle
+
+average:	0.833059
+variance:	0.000948
+95% confidence interval:	[0.811032 0.855086]
+
+-------------------------------------------------------
+Proportion of time Workstation 3 idle
+
+average:	0.907976
+variance:	0.000143
+95% confidence interval:	[0.899426 0.916525]
+

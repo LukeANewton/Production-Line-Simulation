@@ -1,0 +1,60 @@
+--------------------------------------------------------------------------------------------
+                           Statistics From One Replication
+--------------------------------------------------------------------------------------------
+Total simulation time: 3000.000000 minutes
+
+Number of product 1 produced: 138
+Number of product 2 produced: 74
+Number of product 3 produced: 81
+Total products produced: 293
+
+Total number of component 1 used in production: 293
+Total number of component 2 used in production: 74
+Total number of component 3 used in production: 81
+
+Total number of component 1 used in production or in queues at end of simulation: 296
+Total number of component 2 used in production or in queues at end of simulation: 74
+Total number of component 3 used in production or in queues at end of simulation: 81
+
+Number of component 1 inspected: 296
+Number of component 2 inspected: 74
+Number of component 3 inspected: 81
+
+Time inspector one spent idle: 10.866981 minutes
+Time inspector two spent idle: 318.514326 minutes
+Time workstation one spent idle: 2294.121113 minutes
+Time workstation two spent idle: 2123.687228 minutes
+Time workstation three spent idle: 2192.482089 minutes
+
+Average number of component 1 in queue for workstation 1: 0.112299 components
+Average number of component 1 in queue for workstation 2: 1.026738 components
+Average number of component 1 in queue for workstation 3: 0.890374 components
+Average number of component 2 in queue for workstation 2: 0.356952 components
+Average number of component 3 in queue for workstation 3: 0.405080 components
+
+--------------------------------------------------------------------------------------------
+                                 Steady State Behaviour
+--------------------------------------------------------------------------------------------
+Steady state begins at: 225.000000 minutes
+Total steady state simulation time: 2775.000000 minutes
+
+Number of product 1 produced in steady state: 130
+Number of product 2 produced in steady state: 67
+Number of product 3 produced in steady state: 73
+Total products produced in steady state: 270
+
+Number of component 1 inspected in steady state: 272
+Number of component 2 inspected in steady state: 64
+Number of component 3 inspected in steady state: 73
+
+Time inspector one spent idle in steady state: 10.866981 minutes
+Time inspector two spent idle in steady state: 318.514326 minutes
+Time workstation one spent idle in steady state: 2107.646685 minutes
+Time workstation two spent idle in steady state: 1989.603227 minutes
+Time workstation three spent idle in steady state: 2044.837513 minutes
+
+Average number of component 1 in queue for workstation 1 in steady state: 0.122987 components
+Average number of component 1 in queue for workstation 2 in steady state: 1.092240 components
+Average number of component 1 in queue for workstation 3 in steady state: 0.966325 components
+Average number of component 2 in queue for workstation 2 in steady state: 0.355783 components
+Average number of component 3 in queue for workstation 3 in steady state: 0.382138 components
