@@ -1,4 +1,4 @@
-This submission for the second deliverable of Group 18's SYSC4005 project contains 21 files:
+This submission for the fourth deliverable of Group 18's SYSC4005 project contains 21 files:
 
 SYSC4005_Group18_Deliverable2.pdf
 
@@ -46,7 +46,7 @@ getNextReadInValue.m
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
-SYSC4005_Group18_Deliverable2.pdf contains the report for deliverable 2, including problem formulation, 
+SYSC4005_Group18_Deliverable4.pdf contains the report for deliverable 4, including problem formulation, 
 setting of objectives and overall project plan, model conecptualization, input modelling and 
 data collection, and finally, model tranformation.
 
